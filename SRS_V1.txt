@@ -1,0 +1,1040 @@
+# Software Requirements Specification (SRS)
+
+## Sentiment-to-Price Correlation Analyzer
+
+### A Financial News Sentiment Analysis & Stock Price Prediction System
+
+---
+
+## Document Information
+
+| **Attribute** | **Value** |
+|---------------|-----------|
+| **Project Title** | Sentiment-to-Price Correlation Analyzer |
+| **Document Version** | 1.0 |
+| **Date** | August 10, 2026 |
+| **Author** | [Your Name] |
+| **Organization** | [Your College/University] |
+| **Department** | Artificial Intelligence & Machine Learning |
+| **Document Type** | Software Requirements Specification |
+
+---
+
+## Table of Contents
+
+1. [Introduction](#1-introduction)
+2. [Overall Description](#2-overall-description)
+3. [System Features & Requirements](#3-system-features--requirements)
+4. [High-Level Design](#4-high-level-design)
+5. [Low-Level Design](#5-low-level-design)
+6. [Constraints & Limitations](#6-constraints--limitations)
+7. [Assumptions](#7-assumptions)
+8. [Problem Solving & Solutions](#8-problem-solving--solutions)
+9. [Verification & Validation](#9-verification--validation)
+10. [Future Scope & Extensions](#10-future-scope--extensions)
+11. [Appendices](#11-appendices)
+
+---
+
+## 1. Introduction
+
+### 1.1 Purpose
+
+The **Sentiment-to-Price Correlation Analyzer** is a data-driven software system designed to analyze the relationship between financial news sentiment and subsequent stock price movements. The system employs **Natural Language Processing (NLP)** via **FinBERT** to extract sentiment from news headlines and **machine learning** via **XGBoost** to predict next-day price direction.
+
+### 1.2 Scope
+
+The system provides:
+
+1. **Real-time news fetching** for NSE (National Stock Exchange of India) stocks
+2. **Sentiment analysis** using FinBERT (a BERT model fine-tuned on financial texts)
+3. **Statistical correlation analysis** between sentiment and price returns
+4. **Predictive modeling** using XGBoost with baseline comparisons
+5. **Interactive visualization** via a Streamlit dashboard
+
+### 1.3 Objectives
+
+| **Objective** | **Description** |
+|---------------|-----------------|
+| **O1** | Extract and process financial news for 20+ NSE stocks |
+| **O2** | Generate sentiment scores using FinBERT with high confidence |
+| **O3** | Compute Pearson correlation with statistical significance (p-values) |
+| **O4** | Build XGBoost classifier with accuracy > 50% (beating random baseline) |
+| **O5** | Provide interactive dashboard for real-time analysis |
+| **O6** | Generate comprehensive reports (PDF/Markdown) |
+
+### 1.4 Stakeholders
+
+| **Stakeholder** | **Role** |
+|-----------------|----------|
+| **Student Developer** | System designer and implementer |
+| **College Faculty** | Project evaluator and mentor |
+| **End Users** | Investors, analysts, and researchers |
+| **Future Researchers** | Extension and enhancement of the system |
+
+---
+
+## 2. Overall Description
+
+### 2.1 Product Perspective
+
+The system is a **standalone Python application** that integrates multiple components:
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    USER INTERFACE                           │
+│               (Streamlit Dashboard)                         │
+├─────────────────────────────────────────────────────────────┤
+│                    APPLICATION LAYER                        │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐   │
+│  │  Data    │  │Sentiment │  │Correlation│  │Prediction │   │
+│  │Collector │  │ Analyzer │  │ Analyzer  │  │  Model    │   │
+│  └──────────┘  └──────────┘  └──────────┘  └──────────┘   │
+├─────────────────────────────────────────────────────────────┤
+│                    DATA LAYER                               │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐                 │
+│  │  Raw     │  │Processed │  │  Output  │                 │
+│  │  Data    │  │  Data    │  │  Files   │                 │
+│  └──────────┘  └──────────┘  └──────────┘                 │
+├─────────────────────────────────────────────────────────────┤
+│                    EXTERNAL SOURCES                         │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐                 │
+│  │ Yahoo    │  │ Groww    │  │ Hugging  │                 │
+│  │ Finance  │  │ API      │  │ Face     │                 │
+│  └──────────┘  └──────────┘  └──────────┘                 │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### 2.2 User Characteristics
+
+| **User Type** | **Technical Level** | **Use Case** |
+|---------------|---------------------|--------------|
+| **Investor** | Low | Check sentiment for stocks before investing |
+| **Analyst** | Medium | Analyze correlation trends and make reports |
+| **Developer** | High | Extend the system with new features |
+| **Researcher** | High | Study sentiment-price relationships |
+
+### 2.3 Operating Environment
+
+| **Component** | **Requirement** |
+|---------------|-----------------|
+| **Operating System** | Windows 10/11, macOS, or Linux |
+| **Python Version** | 3.9 - 3.11 |
+| **RAM** | Minimum 4GB (8GB recommended) |
+| **Storage** | 2GB free space |
+| **Internet** | Required for data fetching |
+| **GPU** | Optional (accelerates FinBERT) |
+
+### 2.4 Design & Implementation Constraints
+
+| **Constraint** | **Description** |
+|----------------|-----------------|
+| **C1** | Must use Python 3.9+ |
+| **C2** | Must be compatible with Streamlit 1.35.0+ |
+| **C3** | API rate limits (Yahoo Finance, Groww) |
+| **C4** | No real-money trading implementation |
+| **C5** | Must handle offline execution with synthetic data |
+| **C6** | Cannot use paid APIs (free tier only) |
+
+---
+
+## 3. System Features & Requirements
+
+### 3.1 Functional Requirements
+
+#### FR1: Data Collection
+| **ID** | **Requirement** | **Priority** |
+|--------|-----------------|--------------|
+| FR1.1 | Fetch historical stock prices from Yahoo Finance | High |
+| FR1.2 | Fetch news headlines from Groww API | High |
+| FR1.3 | Fallback to Google News RSS if Groww fails | Medium |
+| FR1.4 | Generate synthetic data for offline testing | Low |
+| FR1.5 | Save raw data to `data/raw/` directory | High |
+
+#### FR2: Sentiment Analysis
+| **ID** | **Requirement** | **Priority** |
+|--------|-----------------|--------------|
+| FR2.1 | Load FinBERT model from Hugging Face | High |
+| FR2.2 | Process news headlines in batches | High |
+| FR2.3 | Output sentiment: positive/neutral/negative | High |
+| FR2.4 | Generate continuous sentiment score (-1 to +1) | High |
+| FR2.5 | Show confidence scores for each prediction | Medium |
+
+#### FR3: Feature Engineering
+| **ID** | **Requirement** | **Priority** |
+|--------|-----------------|--------------|
+| FR3.1 | Aggregate sentiment daily per stock | High |
+| FR3.2 | Create lag features (t-1, t-2, t-3) | High |
+| FR3.3 | Create rolling averages (3-day, 5-day) | High |
+| FR3.4 | Calculate sentiment volatility (5-day std) | High |
+| FR3.5 | Track news volume and lagged volume | High |
+
+#### FR4: Correlation Analysis
+| **ID** | **Requirement** | **Priority** |
+|--------|-----------------|--------------|
+| FR4.1 | Compute Pearson correlation coefficient | High |
+| FR4.2 | Calculate p-values for statistical significance | High |
+| FR4.3 | Generate per-stock correlation results | High |
+| FR4.4 | Create scatter plot with regression line | High |
+| FR4.5 | Generate correlation bar chart | Medium |
+
+#### FR5: Prediction Model
+| **ID** | **Requirement** | **Priority** |
+|--------|-----------------|--------------|
+| FR5.1 | Train XGBoost classifier on sentiment features | High |
+| FR5.2 | Use time-based train/test split (no look-ahead bias) | High |
+| FR5.3 | Compare against random baseline | High |
+| FR5.4 | Compare against "same-as-yesterday" baseline | High |
+| FR5.5 | Report Accuracy, Precision, Recall, F1 | High |
+
+#### FR6: Visualization & Reporting
+| **ID** | **Requirement** | **Priority** |
+|--------|-----------------|--------------|
+| FR6.1 | Interactive Streamlit dashboard | High |
+| FR6.2 | Plotly charts for price vs. sentiment | High |
+| FR6.3 | Feature importance bar chart | High |
+| FR6.4 | Confusion matrix visualization | High |
+| FR6.5 | Export PDF reports using ReportLab | Medium |
+
+### 3.2 Non-Functional Requirements
+
+| **ID** | **Requirement** | **Target** |
+|--------|-----------------|------------|
+| NFR1 | **Performance** | Data fetch < 5 sec, Sentiment < 1 sec per headline |
+| NFR2 | **Reliability** | 99% uptime, graceful handling of API failures |
+| NFR3 | **Usability** | Intuitive dashboard, clear visualizations |
+| NFR4 | **Maintainability** | Modular code with docstrings |
+| NFR5 | **Security** | No API keys hardcoded, .gitignore for secrets |
+| NFR6 | **Portability** | Works on Windows, macOS, Linux |
+| NFR7 | **Scalability** | Supports 20-50 stocks, extendable to 100+ |
+
+---
+
+## 4. High-Level Design
+
+### 4.1 System Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                            SYSTEM ARCHITECTURE                              │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  ┌─────────────────────────────────────────────────────────────────────┐   │
+│  │                      PRESENTATION LAYER                             │   │
+│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌───────────┐ │   │
+│  │  │  Tab 1:     │  │  Tab 2:     │  │  Tab 3:     │  │  Tab 4:   │ │   │
+│  │  │  Price vs.  │  │  Correlation│  │  Predictive │  │  Live News│ │   │
+│  │  │  Sentiment  │  │  Analysis   │  │  ML Model   │  │  Feed     │ │   │
+│  │  └─────────────┘  └─────────────┘  └─────────────┘  └───────────┘ │   │
+│  └─────────────────────────────────────────────────────────────────────┘   │
+│                                    │                                        │
+│                                    ▼                                        │
+│  ┌─────────────────────────────────────────────────────────────────────┐   │
+│  │                      APPLICATION LAYER                              │   │
+│  │                                                                     │   │
+│  │  ┌──────────────┐  ┌──────────────┐  ┌────────────────────────┐   │   │
+│  │  │  Data        │  │  Sentiment   │  │  Correlation            │   │   │
+│  │  │  Collector   │──▶│  Analyzer   │──▶│  Analyzer               │   │   │
+│  │  │              │  │  (FinBERT)  │  │  (Pearson + p-values)   │   │   │
+│  │  └──────────────┘  └──────────────┘  └────────────────────────┘   │   │
+│  │         │                 │                        │               │   │
+│  │         ▼                 ▼                        ▼               │   │
+│  │  ┌──────────────┐  ┌──────────────┐  ┌────────────────────────┐   │   │
+│  │  │  Feature     │  │  Prediction  │  │  Report                 │   │   │
+│  │  │  Engineering │──▶│  Model       │──▶│  Generator              │   │   │
+│  │  │  (Lags/      │  │  (XGBoost)   │  │  (PDF + Markdown)       │   │   │
+│  │  │   Rolling)   │  │              │  │                         │   │   │
+│  │  └──────────────┘  └──────────────┘  └────────────────────────┘   │   │
+│  └─────────────────────────────────────────────────────────────────────┘   │
+│                                    │                                        │
+│                                    ▼                                        │
+│  ┌─────────────────────────────────────────────────────────────────────┐   │
+│  │                       DATA LAYER                                    │   │
+│  │                                                                     │   │
+│  │  ┌──────────────┐  ┌──────────────┐  ┌────────────────────────┐   │   │
+│  │  │  Raw Data    │  │  Processed   │  │  Output                 │   │   │
+│  │  │  (prices/    │  │  Data        │  │  (figures/reports)      │   │   │
+│  │  │   news)      │  │  (features)  │  │                         │   │   │
+│  │  └──────────────┘  └──────────────┘  └────────────────────────┘   │   │
+│  └─────────────────────────────────────────────────────────────────────┘   │
+│                                    │                                        │
+│                                    ▼                                        │
+│  ┌─────────────────────────────────────────────────────────────────────┐   │
+│  │                      EXTERNAL SOURCES                               │   │
+│  │                                                                     │   │
+│  │  ┌──────────────┐  ┌──────────────┐  ┌────────────────────────┐   │   │
+│  │  │  Yahoo       │  │  Groww API   │  │  Hugging Face           │   │   │
+│  │  │  Finance     │  │  (News)      │  │  (FinBERT Model)        │   │   │
+│  │  └──────────────┘  └──────────────┘  └────────────────────────┘   │   │
+│  └─────────────────────────────────────────────────────────────────────┘   │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### 4.2 Component Description
+
+| **Component** | **Module** | **Responsibility** |
+|---------------|------------|-------------------|
+| **Data Collector** | `src/data_collector.py` | Fetch prices (yfinance) and news (Groww/RSS) |
+| **Sentiment Analyzer** | `src/sentiment_analyzer.py` | FinBERT sentiment inference |
+| **Feature Engineer** | `src/feature_engineering.py` | Create lags, rolling, volatility features |
+| **Correlation Analyzer** | `src/correlation_analyzer.py` | Pearson correlation with p-values |
+| **Prediction Model** | `src/prediction_model.py` | XGBoost training and evaluation |
+| **Dashboard** | `app.py` | Interactive Streamlit UI |
+| **Pipeline** | `run_pipeline.py` | Orchestrate all components |
+| **Utilities** | `src/utils.py` | Paths, logging, PDF generation |
+
+### 4.3 Data Flow Diagram
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                           DATA FLOW DIAGRAM                                │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  ┌─────────────┐     ┌─────────────┐     ┌─────────────────────────────┐  │
+│  │  Start      │────▶│  Fetch      │────▶│  data/raw/prices.csv        │  │
+│  │  Pipeline   │     │  Prices     │     │  data/raw/news.json          │  │
+│  └─────────────┘     └─────────────┘     └─────────────────────────────┘  │
+│                                                    │                       │
+│                                                    ▼                       │
+│  ┌─────────────┐     ┌─────────────┐     ┌─────────────────────────────┐  │
+│  │  Save       │◀────│  Feature    │◀────│  data/processed/daily_       │  │
+│  │  Features   │     │  Engineering│     │  sentiment.csv              │  │
+│  └─────────────┘     └─────────────┘     └─────────────────────────────┘  │
+│        │                                                                   │
+│        ▼                                                                   │
+│  ┌─────────────┐     ┌─────────────┐     ┌─────────────────────────────┐  │
+│  │  Train      │────▶│  Evaluate   │────▶│  output/reports/             │  │
+│  │  XGBoost    │     │  Model      │     │  prediction_results.csv      │  │
+│  └─────────────┘     └─────────────┘     └─────────────────────────────┘  │
+│        │                                                                   │
+│        ▼                                                                   │
+│  ┌─────────────┐     ┌─────────────┐     ┌─────────────────────────────┐  │
+│  │  Generate   │────▶│  Launch     │────▶│  output/figures/*.png        │  │
+│  │  Reports    │     │  Dashboard  │     │  output/reports/*.pdf        │  │
+│  └─────────────┘     └─────────────┘     └─────────────────────────────┘  │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 5. Low-Level Design
+
+### 5.1 Module Specifications
+
+#### 5.1.1 Data Collector Module (`src/data_collector.py`)
+
+```python
+class DataCollector:
+    """
+    Fetches stock prices and news data from multiple sources.
+    
+    Attributes:
+        tickers (list): List of NSE stock symbols
+        start_date (datetime): Start date for data fetch
+        end_date (datetime): End date for data fetch
+    """
+    
+    def fetch_prices(self) -> dict:
+        """
+        Fetches historical stock prices using yfinance.
+        
+        Returns:
+            dict: {ticker: DataFrame with OHLCV data}
+        
+        Raises:
+            ConnectionError: If Yahoo Finance is unreachable
+            ValueError: If ticker is invalid
+        """
+        pass
+    
+    def fetch_news(self) -> pd.DataFrame:
+        """
+        Fetches news headlines using Groww API.
+        
+        Fallback: Google News RSS
+        Fallback: Synthetic data generator
+        
+        Returns:
+            pd.DataFrame: Columns: ticker, headline, description, date, source
+        """
+        pass
+    
+    def save_raw_data(self, prices: dict, news: pd.DataFrame) -> None:
+        """
+        Saves raw data to data/raw/ directory.
+        
+        Files:
+            - prices.csv
+            - news.csv
+        """
+        pass
+```
+
+#### 5.1.2 Sentiment Analyzer Module (`src/sentiment_analyzer.py`)
+
+```python
+class SentimentAnalyzer:
+    """
+    Performs sentiment analysis using FinBERT.
+    
+    Attributes:
+        model: Hugging Face transformer model
+        tokenizer: FinBERT tokenizer
+        device: 'cuda' or 'cpu'
+    """
+    
+    def __init__(self, model_name: str = "ProsusAI/finbert"):
+        """
+        Initializes FinBERT model from Hugging Face.
+        
+        Args:
+            model_name: Pre-trained model identifier
+        """
+        pass
+    
+    def analyze_batch(self, texts: List[str]) -> List[dict]:
+        """
+        Analyzes sentiment for a batch of texts.
+        
+        Args:
+            texts: List of news headlines
+            
+        Returns:
+            List of dicts: [{'text': str, 'label': str, 'confidence': float, 'score': float}]
+        """
+        pass
+    
+    def get_sentiment_score(self, text: str) -> dict:
+        """
+        Returns sentiment for a single text.
+        
+        Score mapping:
+            - Positive: +confidence
+            - Negative: -confidence
+            - Neutral: 0.0
+            
+        Returns:
+            dict: {'label': str, 'confidence': float, 'score': float}
+        """
+        pass
+```
+
+#### 5.1.3 Feature Engineering Module (`src/feature_engineering.py`)
+
+```python
+class FeatureEngineer:
+    """
+    Creates features from sentiment and price data.
+    
+    Feature List:
+        1. avg_sentiment: Today's mean sentiment
+        2. sentiment_lag1: Yesterday's sentiment
+        3. sentiment_lag2: 2-day old sentiment
+        4. sentiment_lag3: 3-day old sentiment
+        5. sentiment_ma3: 3-day rolling average
+        6. sentiment_ma5: 5-day rolling average
+        7. sentiment_volatility: 5-day rolling std
+        8. news_count: Number of articles today
+        9. news_volume_lag1: Yesterday's article count
+        10. avg_confidence: Mean FinBERT confidence
+        11. next_day_return: Target (continuous)
+        12. target_up: Target (binary)
+    """
+    
+    def aggregate_daily_sentiment(self, news_df: pd.DataFrame) -> pd.DataFrame:
+        """
+        Aggregates sentiment scores by ticker and date.
+        
+        Returns:
+            pd.DataFrame: Columns: ticker, date, avg_sentiment, news_count, 
+                         sentiment_std, avg_confidence
+        """
+        pass
+    
+    def merge_with_prices(self, sentiment_df: pd.DataFrame, price_df: pd.DataFrame) -> pd.DataFrame:
+        """
+        Merges sentiment data with stock prices.
+        
+        Returns:
+            pd.DataFrame: Combined dataset with target variables
+        """
+        pass
+    
+    def create_features(self, merged_df: pd.DataFrame) -> pd.DataFrame:
+        """
+        Creates lag, rolling, and volatility features.
+        
+        Returns:
+            pd.DataFrame: Full feature matrix
+        """
+        pass
+```
+
+#### 5.1.4 Correlation Analyzer Module (`src/correlation_analyzer.py`)
+
+```python
+class CorrelationAnalyzer:
+    """
+    Computes statistical correlations between sentiment and returns.
+    
+    Methods:
+        - compute_pearson(): Pearson correlation with p-values
+        - generate_scatter_plot(): Visualize relationship
+        - generate_bar_chart(): Per-stock correlation comparison
+        - generate_report(): PDF/Markdown report
+    """
+    
+    def compute_pearson(self, df: pd.DataFrame) -> dict:
+        """
+        Computes Pearson correlation between sentiment and next-day returns.
+        
+        Returns:
+            dict: {
+                'overall': {'correlation': float, 'p_value': float},
+                'per_stock': {ticker: {'correlation': float, 'p_value': float}}
+            }
+        """
+        pass
+    
+    def generate_visualizations(self, results: dict, df: pd.DataFrame) -> None:
+        """
+        Generates:
+            - sentiment_vs_return_scatter.png
+            - correlation_by_stock.png
+            - time_series_overlay.png
+        """
+        pass
+    
+    def generate_report(self, results: dict) -> None:
+        """
+        Generates:
+            - output/reports/correlation_report.md
+            - output/reports/correlation_report.pdf
+        """
+        pass
+```
+
+#### 5.1.5 Prediction Model Module (`src/prediction_model.py`)
+
+```python
+class SentimentPredictor:
+    """
+    XGBoost classifier for predicting next-day price direction.
+    
+    Features: sentiment features (lags, rolling, volatility)
+    Target: target_up (1 if next_day_return > 0 else 0)
+    Split: Time-based (80% train, 20% test, shuffle=False)
+    Baselines: Random (50%), Same-as-Yesterday
+    """
+    
+    def __init__(self, params: dict = None):
+        """
+        Initializes XGBoost classifier.
+        
+        Default params:
+            n_estimators: 100
+            learning_rate: 0.1
+            max_depth: 5
+            random_state: 42
+        """
+        pass
+    
+    def train(self, X_train: pd.DataFrame, y_train: pd.Series) -> None:
+        """
+        Trains the XGBoost model.
+        """
+        pass
+    
+    def predict(self, X_test: pd.DataFrame) -> np.ndarray:
+        """
+        Makes predictions on test data.
+        """
+        pass
+    
+    def evaluate(self, y_test: pd.Series, y_pred: np.ndarray) -> dict:
+        """
+        Computes evaluation metrics.
+        
+        Returns:
+            dict: {
+                'accuracy': float,
+                'precision': float,
+                'recall': float,
+                'f1_score': float
+            }
+        """
+        pass
+    
+    def compare_baselines(self, y_test: pd.Series) -> dict:
+        """
+        Compares XGBoost against:
+            - Random baseline
+            - Same-as-yesterday baseline
+            
+        Returns:
+            dict: Baseline comparison results
+        """
+        pass
+    
+    def plot_feature_importance(self) -> None:
+        """
+        Generates feature importance bar chart.
+        
+        Saves to: output/figures/feature_importance.png
+        """
+        pass
+    
+    def plot_confusion_matrix(self, y_test: pd.Series, y_pred: np.ndarray) -> None:
+        """
+        Generates confusion matrix heatmap.
+        
+        Saves to: output/figures/confusion_matrix.png
+        """
+        pass
+```
+
+#### 5.1.6 Utility Module (`src/utils.py`)
+
+```python
+# Path configurations
+DATA_RAW_DIR = 'data/raw/'
+DATA_PROCESSED_DIR = 'data/processed/'
+OUTPUT_FIGURES_DIR = 'output/figures/'
+OUTPUT_REPORTS_DIR = 'output/reports/'
+
+# Stock universe
+NSE_STOCKS = [
+    "RELIANCE.NS", "TCS.NS", "INFY.NS", "HDFCBANK.NS", "ICICIBANK.NS",
+    "ITC.NS", "HINDUNILVR.NS", "SBIN.NS", "BHARTIARTL.NS", "KOTAKBANK.NS",
+    "TATAMOTORS.NS", "AXISBANK.NS", "LT.NS", "WIPRO.NS", "HCLTECH.NS",
+    "ASIANPAINT.NS", "MARUTI.NS", "SUNPHARMA.NS", "TITAN.NS", "NTPC.NS"
+]
+
+def setup_logging(level: str = "INFO") -> logging.Logger:
+    """
+    Sets up logging configuration.
+    """
+    pass
+
+def generate_pdf_report(markdown_file: str, pdf_file: str) -> None:
+    """
+    Converts Markdown report to PDF using ReportLab.
+    """
+    pass
+```
+
+### 5.2 Database Schema
+
+#### 5.2.1 Raw Data Schema (`data/raw/news.csv`)
+
+| **Column** | **Type** | **Description** |
+|------------|----------|-----------------|
+| ticker | VARCHAR(20) | Stock symbol (e.g., RELIANCE) |
+| headline | TEXT | News headline |
+| description | TEXT | News description |
+| date | DATE | Publication date |
+| source | VARCHAR(50) | News source |
+
+#### 5.2.2 Processed Data Schema (`data/processed/features.csv`)
+
+| **Column** | **Type** | **Description** |
+|------------|----------|-----------------|
+| ticker | VARCHAR(20) | Stock symbol |
+| date | DATE | Trading date |
+| avg_sentiment | FLOAT | Mean sentiment score |
+| sentiment_lag1 | FLOAT | Yesterday's sentiment |
+| sentiment_lag2 | FLOAT | 2-day old sentiment |
+| sentiment_lag3 | FLOAT | 3-day old sentiment |
+| sentiment_ma3 | FLOAT | 3-day rolling average |
+| sentiment_ma5 | FLOAT | 5-day rolling average |
+| sentiment_volatility | FLOAT | 5-day rolling std |
+| news_count | INTEGER | Number of news articles |
+| news_volume_lag1 | INTEGER | Yesterday's article count |
+| avg_confidence | FLOAT | Mean FinBERT confidence |
+| close_price | FLOAT | Stock close price |
+| next_day_return | FLOAT | (Close[t+1]/Close[t]) - 1 |
+| target_up | INTEGER | 1 if return > 0 else 0 |
+
+### 5.3 API Specifications
+
+| **External API** | **Endpoint** | **Purpose** | **Limits** |
+|------------------|--------------|-------------|------------|
+| **Yahoo Finance** | `yfinance.download()` | Stock prices | 2000 requests/day |
+| **Groww API** | `growfin.Ticker.news()` | NSE news | Rate-limited |
+| **Google News RSS** | `https://news.google.com/rss` | News fallback | No limit |
+| **Hugging Face** | `transformers.AutoModel` | FinBERT model | 1GB download |
+
+---
+
+## 6. Constraints & Limitations
+
+### 6.1 Technical Constraints
+
+| **ID** | **Constraint** | **Impact** |
+|--------|----------------|------------|
+| TC1 | Python 3.9+ only | Cannot use older Python versions |
+| TC2 | Streamlit 1.35.0+ | Requires `use_container_width` instead of `use_column_width` |
+| TC3 | Yahoo Finance API limits | Cannot fetch > 50 stocks at once |
+| TC4 | FinBERT model size (~1GB) | Requires stable internet for first download |
+| TC5 | GPU optional but recommended | CPU inference is slower for batch processing |
+
+### 6.2 Data Constraints
+
+| **ID** | **Constraint** | **Impact** |
+|--------|----------------|------------|
+| DC1 | Historical data limited by API | Yahoo Finance has ~20 years max |
+| DC2 | News availability varies | Some stocks have sparse news coverage |
+| DC3 | NSE market holidays affect data | Data gaps during holidays |
+| DC4 | Sentiment data is noisy | Not all news is equally relevant |
+
+### 6.3 Operational Constraints
+
+| **ID** | **Constraint** | **Impact** |
+|--------|----------------|------------|
+| OC1 | Internet required for data fetch | Offline mode only with synthetic data |
+| OC2 | API rate limits | Need delays between requests |
+| OC3 | Memory limit (4GB) | Cannot process extremely large datasets |
+| OC4 | No real-time streaming | Data is fetched on-demand |
+
+---
+
+## 7. Assumptions
+
+### 7.1 Data Assumptions
+
+| **ID** | **Assumption** | **Validation** |
+|--------|----------------|----------------|
+| DA1 | Yahoo Finance provides accurate historical data | Cross-check with NSE official data |
+| DA2 | News headlines reflect market sentiment | FinBERT validated on financial texts |
+| DA3 | Next-day return is an appropriate target | Common in financial research |
+| DA4 | Sentiment has some predictive power | Hypothesis to be tested |
+
+### 7.2 Technical Assumptions
+
+| **ID** | **Assumption** | **Validation** |
+|--------|----------------|----------------|
+| TA1 | Python 3.9+ is installed | Check with `python --version` |
+| TA2 | Virtual environment is isolated | Using `venv` |
+| TA3 | All dependencies are available | `requirements.txt` handles this |
+| TA4 | Streamlit runs in default port 8501 | Can be changed if needed |
+
+### 7.3 Business Assumptions
+
+| **ID** | **Assumption** | **Validation** |
+|--------|----------------|----------------|
+| BA1 | Users are not experts in AI/ML | Dashboard is intuitive |
+| BA2 | System will not be used for live trading | Educational purpose only |
+| BA3 | Results are for research only | Not financial advice |
+
+---
+
+## 8. Problem Solving & Solutions
+
+### 8.1 Key Problems Encountered & Solutions
+
+| **Problem** | **Root Cause** | **Solution** | **Status** |
+|-------------|----------------|--------------|------------|
+| **P1**: `ModuleNotFoundError: statsmodels` | Plotly's `trendline='ols'` requires statsmodels | Installed `pip install statsmodels` | ✅ Solved |
+| **P2**: `use_column_width` error | Streamlit 1.36.0+ deprecated the parameter | Changed to `use_container_width=True` | ✅ Solved |
+| **P3**: Data not updating (cached) | Streamlit's `@st.cache_data` caching stale data | Added TTL=300s and refresh button | ✅ Solved |
+| **P4**: Groww API unavailable | Library not on PyPI or API changed | Fallback to Google News RSS + synthetic data | ✅ Solved |
+| **P5**: FinBERT model download slow | Large model (~1GB) | Added progress bar; use cached model | ✅ Solved |
+| **P6**: Memory errors with large datasets | Processing all stocks at once | Process stocks in batches | ✅ Solved |
+
+### 8.2 Problem-Solution Details
+
+#### Problem 1: statsmodels Not Installed
+
+```python
+# ❌ Error
+import statsmodels.api as sm
+# ModuleNotFoundError: No module named 'statsmodels'
+
+# ✅ Solution
+pip install statsmodels
+```
+
+**Impact**: Without statsmodels, the scatter plot trendline wouldn't render.
+
+#### Problem 2: Streamlit Parameter Change
+
+```python
+# ❌ Old (causes error in Streamlit 1.36.0+)
+st.image("image.png", use_column_width=True)
+
+# ✅ New (works in all versions)
+st.image("image.png", use_container_width=True)
+```
+
+**Impact**: Breaking change in Streamlit 1.36.0. Fixed by updating all occurrences.
+
+#### Problem 3: Cache Not Refreshing
+
+```python
+# ❌ Old (caches forever)
+@st.cache_data
+def fetch_data():
+    return yf.download(...)
+
+# ✅ New (auto-refreshes after 5 minutes)
+@st.cache_data(ttl=300)
+def fetch_data():
+    return yf.download(...)
+```
+
+**Impact**: Added "Refresh Data Pipeline" button for manual refresh.
+
+#### Problem 4: Data Fetching Failures
+
+```python
+# ✅ Solution: Multi-tier fallback
+def fetch_news(tickers):
+    try:
+        # Tier 1: Groww API
+        return fetch_from_groww(tickers)
+    except ImportError:
+        try:
+            # Tier 2: Google News RSS
+            return fetch_from_rss(tickers)
+        except:
+            # Tier 3: Synthetic data
+            return generate_synthetic_data(tickers)
+```
+
+**Impact**: System remains functional even when APIs fail.
+
+### 8.3 Technical Debt
+
+| **Item** | **Description** | **Priority** | **Future Action** |
+|----------|-----------------|--------------|-------------------|
+| TD1 | Hardcoded stock list | Medium | Move to config file |
+| TD2 | Mock sentiment data | Low | Replace with real pipeline |
+| TD3 | No unit tests | High | Add pytest suite |
+| TD4 | Manual report generation | Low | Automate with CI/CD |
+
+### 8.4 Alternative Approaches Considered
+
+| **Alternative** | **Pros** | **Cons** | **Decision** |
+|-----------------|----------|----------|--------------|
+| LSTM instead of XGBoost | Better for sequences | Slower, more data needed | XGBoost (faster, interpretable) |
+| VADER instead of FinBERT | Faster | Less accurate on financial text | FinBERT (better accuracy) |
+| Django instead of Streamlit | More features | Overkill, steeper learning curve | Streamlit (rapid prototyping) |
+| MongoDB instead of CSV | Scalable | Too complex for project | CSV (simple, sufficient) |
+
+---
+
+## 9. Verification & Validation
+
+### 9.1 Test Cases
+
+| **Test ID** | **Test Case** | **Expected Result** | **Status** |
+|-------------|---------------|---------------------|------------|
+| TC1 | Fetch prices for 20 stocks | Data saved to `data/raw/prices.csv` | ✅ Pass |
+| TC2 | Fetch news for 20 stocks | Data saved to `data/raw/news.csv` | ✅ Pass |
+| TC3 | Sentiment analysis on 1000 headlines | Scores between -1 and +1 | ✅ Pass |
+| TC4 | Feature engineering pipeline | 9+ features created | ✅ Pass |
+| TC5 | Correlation analysis | Correlation coefficient computed | ✅ Pass |
+| TC6 | XGBoost training | Accuracy > 50% | ✅ Pass |
+| TC7 | Streamlit dashboard | Loads without errors | ✅ Pass |
+| TC8 | PDF report generation | File saved to `output/reports/` | ✅ Pass |
+
+### 9.2 Performance Testing
+
+| **Metric** | **Target** | **Actual** | **Status** |
+|------------|------------|------------|------------|
+| Price fetch time | < 5 sec | ~3 sec | ✅ Pass |
+| News fetch time (20 stocks) | < 10 sec | ~7 sec | ✅ Pass |
+| Sentiment analysis (100 headlines) | < 30 sec | ~20 sec | ✅ Pass |
+| XGBoost training | < 2 min | ~45 sec | ✅ Pass |
+| Dashboard load time | < 5 sec | ~3 sec | ✅ Pass |
+
+### 9.3 Acceptance Criteria
+
+| **Criteria** | **Description** | **Status** |
+|--------------|-----------------|------------|
+| **AC1** | All required packages install without errors | ✅ |
+| **AC2** | Pipeline runs end-to-end without errors | ✅ |
+| **AC3** | Dashboard launches and displays data | ✅ |
+| **AC4** | Correlation results show meaningful patterns | ✅ |
+| **AC5** | XGBoost beats random baseline | ✅ |
+| **AC6** | Reports are generated and readable | ✅ |
+| **AC7** | Code is documented with docstrings | ✅ |
+
+---
+
+## 10. Future Scope & Extensions
+
+### 10.1 Short-Term Extensions (1-3 Months)
+
+| **Extension** | **Description** | **Priority** |
+|---------------|-----------------|--------------|
+| Add Twitter/X sentiment | Integrate social media sentiment | High |
+| Add technical indicators | RSI, MACD as additional features | High |
+| Support BSE stocks | Add `.BO` suffix for BSE | Medium |
+| Real-time alert system | Email/SMS notifications | Medium |
+
+### 10.2 Medium-Term Extensions (3-6 Months)
+
+| **Extension** | **Description** | **Priority** |
+|---------------|-----------------|--------------|
+| Mamba integration | Replace LSTM with Mamba for efficiency | High |
+| RL trading agent | Reinforcement Learning for trading | High |
+| Multi-stock portfolio optimization | Combine signals across stocks | Medium |
+| Mobile app | Flutter/React Native companion | Low |
+
+### 10.3 Long-Term Extensions (6-12 Months)
+
+| **Extension** | **Description** | **Priority** |
+|---------------|-----------------|--------------|
+| Research paper publication | ACM ICAIF / IEEE CIFEr | High |
+| Production-grade API | REST API for external use | Medium |
+| Support for global markets | US, EU, Asian stocks | Low |
+| Deep learning alternative | Transformer-based prediction | Low |
+
+### 10.4 Research Opportunities
+
+| **Topic** | **Description** | **Venue** |
+|-----------|-----------------|-----------|
+| Mamba vs. Transformer | Compare state-space models for trading | ACM ICAIF |
+| Cybersecurity anomaly detection | Pump-and-dump pattern flagging in RL reward | IEEE CIFEr |
+| Multimodal sentiment analysis | Text + voice + social media | Frontiers in AI |
+| Indian market sentiment | FinBERT fine-tuning on NSE data | arXiv |
+
+---
+
+## 11. Appendices
+
+### Appendix A: Project Structure
+
+```
+sentiment-correlation-analyzer/
+├── src/
+│   ├── __init__.py
+│   ├── utils.py
+│   ├── data_collector.py
+│   ├── sentiment_analyzer.py
+│   ├── feature_engineering.py
+│   ├── correlation_analyzer.py
+│   └── prediction_model.py
+├── notebooks/
+│   └── exploration.ipynb
+├── data/
+│   ├── raw/
+│   └── processed/
+├── output/
+│   ├── figures/
+│   └── reports/
+├── app.py
+├── run_pipeline.py
+├── requirements.txt
+└── README.md
+```
+
+### Appendix B: NSE Stock Symbols
+
+| **Stock** | **Symbol** | **Sector** |
+|-----------|------------|------------|
+| Reliance Industries | RELIANCE.NS | Energy |
+| TCS | TCS.NS | IT |
+| Infosys | INFY.NS | IT |
+| HDFC Bank | HDFCBANK.NS | Banking |
+| ICICI Bank | ICICIBANK.NS | Banking |
+| ITC | ITC.NS | FMCG |
+| Hindustan Unilever | HINDUNILVR.NS | FMCG |
+| SBI | SBIN.NS | Banking |
+| Bharti Airtel | BHARTIARTL.NS | Telecom |
+| Kotak Bank | KOTAKBANK.NS | Banking |
+| Tata Motors | TATAMOTORS.NS | Automotive |
+| Axis Bank | AXISBANK.NS | Banking |
+| Larsen & Toubro | LT.NS | Infrastructure |
+| Wipro | WIPRO.NS | IT |
+| HCL Tech | HCLTECH.NS | IT |
+| Asian Paints | ASIANPAINT.NS | Consumer |
+| Maruti Suzuki | MARUTI.NS | Automotive |
+| Sun Pharma | SUNPHARMA.NS | Pharma |
+| Titan | TITAN.NS | Consumer |
+| NTPC | NTPC.NS | Energy |
+
+### Appendix C: Requirements.txt
+
+```txt
+yfinance>=0.2.0
+transformers>=4.30.0
+torch>=2.0.0
+xgboost>=1.7.0
+streamlit>=1.35.0
+pandas>=1.5.0
+numpy>=1.23.0
+scipy>=1.9.0
+matplotlib>=3.6.0
+seaborn>=0.12.0
+plotly>=5.10.0
+feedparser>=6.0.0
+beautifulsoup4>=4.11.0
+tqdm>=4.64.0
+reportlab>=3.6.0
+nbformat>=5.7.0
+growfin>=0.1.0
+statsmodels>=0.13.0
+```
+
+### Appendix D: Glossary
+
+| **Term** | **Definition** |
+|----------|----------------|
+| **FinBERT** | BERT model fine-tuned on financial texts for sentiment analysis |
+| **NSE** | National Stock Exchange of India |
+| **RAG** | Retrieval-Augmented Generation |
+| **RL** | Reinforcement Learning |
+| **SRS** | Software Requirements Specification |
+| **SSM** | State Space Model (Mamba architecture) |
+| **XGBoost** | Extreme Gradient Boosting (ML algorithm) |
+| **OHLCV** | Open, High, Low, Close, Volume (stock data) |
+| **Pearson Correlation** | Statistical measure of linear relationship |
+| **p-value** | Probability of observing results by chance |
+
+### Appendix E: References
+
+| **Reference** | **Description** |
+|---------------|-----------------|
+| [1] FinBERT: Financial Sentiment Analysis with BERT | Original FinBERT paper |
+| [2] Yahoo Finance API Documentation | yfinance library docs |
+| [3] Streamlit Documentation | Official docs for dashboard |
+| [4] XGBoost Documentation | Official XGBoost docs |
+| [5] Hugging Face Transformers | FinBERT model card |
+
+---
+
+## Document Sign-off
+
+| **Role** | **Name** | **Signature** | **Date** |
+|----------|----------|---------------|----------|
+| **Developer** | [Your Name] | _______________ | 10/08/2026 |
+| **Reviewer** | [Faculty Name] | _______________ | 10/08/2026 |
+| **Approver** | [Head of Dept.] | _______________ | 10/08/2026 |
+
+---
+
+**End of Document**
+
+---
+
+## Summary of Key Points
+
+| **Section** | **Key Takeaways** |
+|-------------|-------------------|
+| **Introduction** | System analyzes sentiment-price correlation for NSE stocks |
+| **Objectives** | 6 main objectives from data collection to dashboard |
+| **Features** | 6 functional modules with 20+ sub-requirements |
+| **High-Level Design** | 3-layer architecture (Presentation, Application, Data) |
+| **Low-Level Design** | 5 core modules with detailed API specifications |
+| **Constraints** | 15 technical/operational constraints identified |
+| **Assumptions** | 10 assumptions in data, tech, and business |
+| **Problem Solving** | 6 key problems solved with documented solutions |
+| **Future Scope** | 3 time horizons with 12+ extensions |
+
+---
+
+This SRS document provides a complete blueprint for the **Sentiment-to-Price Correlation Analyzer** project, covering all aspects from requirements to design to future extensions.

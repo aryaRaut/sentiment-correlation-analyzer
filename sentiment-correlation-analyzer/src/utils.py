@@ -24,7 +24,7 @@ NSE_STOCKS = [
     "RELIANCE", "TCS", "INFY", "HDFCBANK", "ICICIBANK", 
     "ITC", "HINDUNILVR", "SBIN", "BHARTIARTL", "KOTAKBANK", 
     "TATAMOTORS", "AXISBANK", "LT", "WIPRO", "HCLTECH", 
-    "ASIANPAINT", "MARUTI", "SUNPHARMA", "TITAN", "NTPC"
+    "ASIANPAINT", "MARUTI", "SUNPHARMA", "TITAN", "NTPC", "WAAREEENER"
 ]
 
 def get_symbol_with_suffix(symbol: str) -> str:
