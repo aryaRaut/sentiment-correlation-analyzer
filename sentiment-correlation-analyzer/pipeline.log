@@ -1,0 +1,258 @@
+[2026-08-10 21:25:57] [INFO] - ======================================================================
+[2026-08-10 21:25:57] [INFO] - STARTING SENTIMENT-TO-PRICE CORRELATION ANALYZER PIPELINE
+[2026-08-10 21:25:57] [INFO] - ======================================================================
+[2026-08-10 21:25:57] [INFO] - 
+[STEP 1/6] Data Collection (NSE Prices + Stock News)...
+[2026-08-10 21:25:57] [INFO] - Fetching stock price data for 20 NSE stocks from 2026-02-11 to 2026-08-10...
+[2026-08-10 21:26:03] [WARNING] - No price data retrieved for TATAMOTORS.NS. Attempting download fallback...
+[2026-08-10 21:26:05] [WARNING] - Failed to fetch price data for TATAMOTORS
+[2026-08-10 21:26:08] [INFO] - Saved raw stock prices (2337 rows) to E:\X\Project_College\sentiment-correlation-analyzer\data\raw\raw_prices.csv
+[2026-08-10 21:26:08] [INFO] - Fetching news data for 20 stocks...
+[2026-08-10 21:26:08] [INFO] - growfin library not found. Using RSS & yfinance news fallback.
+[2026-08-10 21:26:22] [INFO] - Saved raw news headlines (500 rows) to E:\X\Project_College\sentiment-correlation-analyzer\data\raw\raw_news.csv
+[2026-08-10 21:26:22] [INFO] - -> Fetched 2337 daily price records across 19 stocks.
+[2026-08-10 21:26:22] [INFO] - -> Fetched 500 headline articles.
+[2026-08-10 21:26:22] [INFO] - 
+[STEP 2/6] Running FinBERT Sentiment Inference...
+[2026-08-10 21:26:22] [INFO] - Loading FinBERT sentiment model 'ProsusAI/finbert' (device: CPU)...
+[2026-08-10 21:27:07] [INFO] - FinBERT model loaded successfully.
+[2026-08-10 21:27:07] [INFO] - Running sentiment analysis on 500 headlines using FinBERT...
+[2026-08-10 21:27:10] [ERROR] - Inference error in batch 0: string indices must be integers, not 'str'. Fallback to rule-based for this batch.
+[2026-08-10 21:27:12] [ERROR] - Inference error in batch 32: string indices must be integers, not 'str'. Fallback to rule-based for this batch.
+[2026-08-10 21:27:15] [ERROR] - Inference error in batch 64: string indices must be integers, not 'str'. Fallback to rule-based for this batch.
+[2026-08-10 21:27:15] [ERROR] - Inference error in batch 96: string indices must be integers, not 'str'. Fallback to rule-based for this batch.
+[2026-08-10 21:27:18] [ERROR] - Inference error in batch 0: string indices must be integers, not 'str'. Fallback to rule-based for this batch.
+[2026-08-10 21:27:21] [ERROR] - Inference error in batch 32: string indices must be integers, not 'str'. Fallback to rule-based for this batch.
+[2026-08-10 21:27:24] [ERROR] - Inference error in batch 64: string indices must be integers, not 'str'. Fallback to rule-based for this batch.
+[2026-08-10 21:27:24] [ERROR] - Inference error in batch 96: string indices must be integers, not 'str'. Fallback to rule-based for this batch.
+[2026-08-10 21:27:27] [ERROR] - Inference error in batch 0: string indices must be integers, not 'str'. Fallback to rule-based for this batch.
+[2026-08-10 21:27:29] [ERROR] - Inference error in batch 32: string indices must be integers, not 'str'. Fallback to rule-based for this batch.
+[2026-08-10 21:27:32] [ERROR] - Inference error in batch 64: string indices must be integers, not 'str'. Fallback to rule-based for this batch.
+[2026-08-10 21:27:33] [ERROR] - Inference error in batch 96: string indices must be integers, not 'str'. Fallback to rule-based for this batch.
+[2026-08-10 21:27:35] [ERROR] - Inference error in batch 0: string indices must be integers, not 'str'. Fallback to rule-based for this batch.
+[2026-08-10 21:27:38] [ERROR] - Inference error in batch 32: string indices must be integers, not 'str'. Fallback to rule-based for this batch.
+[2026-08-10 21:27:41] [ERROR] - Inference error in batch 64: string indices must be integers, not 'str'. Fallback to rule-based for this batch.
+[2026-08-10 21:27:41] [ERROR] - Inference error in batch 96: string indices must be integers, not 'str'. Fallback to rule-based for this batch.
+[2026-08-10 21:27:44] [ERROR] - Inference error in batch 0: string indices must be integers, not 'str'. Fallback to rule-based for this batch.
+[2026-08-10 21:27:46] [ERROR] - Inference error in batch 32: string indices must be integers, not 'str'. Fallback to rule-based for this batch.
+[2026-08-10 21:27:49] [ERROR] - Inference error in batch 64: string indices must be integers, not 'str'. Fallback to rule-based for this batch.
+[2026-08-10 21:27:49] [ERROR] - Inference error in batch 96: string indices must be integers, not 'str'. Fallback to rule-based for this batch.
+[2026-08-10 21:27:49] [INFO] - -> Sentiment scoring complete. Sample predictions:
+[2026-08-10 21:27:49] [INFO] - 
+[STEP 3/6] Aggregating Daily Sentiment & Building Feature Matrix...
+[2026-08-10 21:27:49] [INFO] - Building feature matrix and calculating target variables...
+[2026-08-10 21:27:49] [INFO] - Aggregating news sentiment daily per stock...
+[2026-08-10 21:27:49] [INFO] - Saved processed dataset (2261 rows, 22 columns) to E:\X\Project_College\sentiment-correlation-analyzer\data\processed\processed_dataset.csv
+[2026-08-10 21:27:49] [INFO] - -> Feature matrix built with shape (2261, 22).
+[2026-08-10 21:27:49] [INFO] - 
+[STEP 4/6] Computing Pearson Correlations & Generating Visualizations...
+[2026-08-10 21:27:49] [INFO] - Computing Pearson correlations between sentiment and next-day returns...
+[2026-08-10 21:27:52] [INFO] - Saved correlation bar chart to E:\X\Project_College\sentiment-correlation-analyzer\output\figures\correlation_by_stock.png
+[2026-08-10 21:27:53] [INFO] - Saved sentiment vs return scatter plot to E:\X\Project_College\sentiment-correlation-analyzer\output\figures\sentiment_vs_return_scatter.png
+[2026-08-10 21:27:54] [INFO] - Saved time series overlay plot to E:\X\Project_College\sentiment-correlation-analyzer\output\figures\time_series_overlay.png
+[2026-08-10 21:27:54] [INFO] - Saved correlation Markdown report to E:\X\Project_College\sentiment-correlation-analyzer\output\reports\correlation_report.md
+[2026-08-10 21:27:54] [INFO] - Exported correlation PDF report to E:\X\Project_College\sentiment-correlation-analyzer\output\reports\correlation_report.pdf
+[2026-08-10 21:27:54] [INFO] - Computing Pearson correlations between sentiment and next-day returns...
+[2026-08-10 21:27:54] [INFO] - -> Overall Pearson Correlation r = 0.0489 (p = 0.0200)
+[2026-08-10 21:27:54] [INFO] - -> Correlation Report generated at: E:\X\Project_College\sentiment-correlation-analyzer\output\reports\correlation_report.md
+[2026-08-10 21:27:54] [INFO] - 
+[STEP 5/6] Training XGBoost Classifier & Evaluating Against Baselines...
+[2026-08-10 21:27:54] [INFO] - Time-based split created: Train samples = 1808, Test samples = 453
+[2026-08-10 21:27:54] [INFO] - Training XGBoost Classifier...
+[2026-08-10 21:27:55] [INFO] - Saved prediction results table to E:\X\Project_College\sentiment-correlation-analyzer\output\reports\prediction_results.csv
+[2026-08-10 21:27:56] [INFO] - Saved feature importance plot to E:\X\Project_College\sentiment-correlation-analyzer\output\figures\feature_importance.png
+[2026-08-10 21:27:56] [INFO] - Saved confusion matrix plot to E:\X\Project_College\sentiment-correlation-analyzer\output\figures\confusion_matrix.png
+[2026-08-10 21:27:56] [INFO] - -> Model Comparison Results:
+[2026-08-10 21:27:56] [INFO] - 
+======================================================================
+[2026-08-10 21:27:56] [INFO] - PIPELINE COMPLETED SUCCESSFULLY IN 119.41 SECONDS!
+[2026-08-10 21:27:56] [INFO] - ======================================================================
+[2026-08-10 21:27:56] [INFO] - Output Figures saved to: E:\X\Project_College\sentiment-correlation-analyzer\output\figures
+[2026-08-10 21:27:56] [INFO] - Output Reports saved to: E:\X\Project_College\sentiment-correlation-analyzer\output\reports
+[2026-08-10 21:27:56] [INFO] - 
+To launch the interactive Streamlit Dashboard, run:
+[2026-08-10 21:27:56] [INFO] -   py -m streamlit run app.py
+[2026-08-10 21:27:56] [INFO] - ======================================================================
+[2026-08-10 21:41:52] [INFO] - ======================================================================
+[2026-08-10 21:41:52] [INFO] - STARTING SENTIMENT-TO-PRICE CORRELATION ANALYZER PIPELINE
+[2026-08-10 21:41:52] [INFO] - ======================================================================
+[2026-08-10 21:41:52] [INFO] - 
+[STEP 1/6] Data Collection (NSE Prices + Stock News)...
+[2026-08-10 21:41:52] [INFO] - Fetching stock price data for 20 NSE stocks from 2026-02-11 to 2026-08-10...
+[2026-08-10 21:41:56] [WARNING] - No price data retrieved for TATAMOTORS.NS. Attempting download fallback...
+[2026-08-10 21:41:57] [WARNING] - Failed to fetch price data for TATAMOTORS
+[2026-08-10 21:41:59] [INFO] - Saved raw stock prices (2337 rows) to E:\X\Project_College\sentiment-correlation-analyzer\data\raw\raw_prices.csv
+[2026-08-10 21:41:59] [INFO] - Fetching news data for 20 stocks...
+[2026-08-10 21:41:59] [INFO] - growfin library not found. Using RSS & yfinance news fallback.
+[2026-08-10 21:42:12] [INFO] - Saved raw news headlines (500 rows) to E:\X\Project_College\sentiment-correlation-analyzer\data\raw\raw_news.csv
+[2026-08-10 21:42:12] [INFO] - -> Fetched 2337 daily price records across 19 stocks.
+[2026-08-10 21:42:12] [INFO] - -> Fetched 500 headline articles.
+[2026-08-10 21:42:12] [INFO] - 
+[STEP 2/6] Running FinBERT Sentiment Inference...
+[2026-08-10 21:42:12] [INFO] - Loading FinBERT sentiment model 'ProsusAI/finbert' (device: CPU)...
+[2026-08-10 21:42:15] [INFO] - FinBERT model loaded successfully.
+[2026-08-10 21:42:15] [INFO] - Running sentiment analysis on 500 headlines using FinBERT...
+[2026-08-10 21:43:10] [INFO] - -> Sentiment scoring complete. Sample predictions:
+[2026-08-10 21:43:10] [INFO] - 
+[STEP 3/6] Aggregating Daily Sentiment & Building Feature Matrix...
+[2026-08-10 21:43:10] [INFO] - Building feature matrix and calculating target variables...
+[2026-08-10 21:43:10] [INFO] - Aggregating news sentiment daily per stock...
+[2026-08-10 21:43:11] [INFO] - Saved processed dataset (2261 rows, 22 columns) to E:\X\Project_College\sentiment-correlation-analyzer\data\processed\processed_dataset.csv
+[2026-08-10 21:43:11] [INFO] - -> Feature matrix built with shape (2261, 22).
+[2026-08-10 21:43:11] [INFO] - 
+[STEP 4/6] Computing Pearson Correlations & Generating Visualizations...
+[2026-08-10 21:43:11] [INFO] - Computing Pearson correlations between sentiment and next-day returns...
+[2026-08-10 21:43:16] [INFO] - Saved correlation bar chart to E:\X\Project_College\sentiment-correlation-analyzer\output\figures\correlation_by_stock.png
+[2026-08-10 21:43:20] [INFO] - Saved sentiment vs return scatter plot to E:\X\Project_College\sentiment-correlation-analyzer\output\figures\sentiment_vs_return_scatter.png
+[2026-08-10 21:43:24] [INFO] - Saved time series overlay plot to E:\X\Project_College\sentiment-correlation-analyzer\output\figures\time_series_overlay.png
+[2026-08-10 21:43:24] [INFO] - Saved correlation Markdown report to E:\X\Project_College\sentiment-correlation-analyzer\output\reports\correlation_report.md
+[2026-08-10 21:43:25] [INFO] - Exported correlation PDF report to E:\X\Project_College\sentiment-correlation-analyzer\output\reports\correlation_report.pdf
+[2026-08-10 21:43:25] [INFO] - Computing Pearson correlations between sentiment and next-day returns...
+[2026-08-10 21:43:25] [INFO] - -> Overall Pearson Correlation r = 0.0452 (p = 0.0314)
+[2026-08-10 21:43:25] [INFO] - -> Correlation Report generated at: E:\X\Project_College\sentiment-correlation-analyzer\output\reports\correlation_report.md
+[2026-08-10 21:43:25] [INFO] - 
+[STEP 5/6] Training XGBoost Classifier & Evaluating Against Baselines...
+[2026-08-10 21:43:25] [INFO] - Time-based split created: Train samples = 1808, Test samples = 453
+[2026-08-10 21:43:25] [INFO] - Training XGBoost Classifier...
+[2026-08-10 21:43:27] [INFO] - Saved prediction results table to E:\X\Project_College\sentiment-correlation-analyzer\output\reports\prediction_results.csv
+[2026-08-10 21:43:30] [INFO] - Saved feature importance plot to E:\X\Project_College\sentiment-correlation-analyzer\output\figures\feature_importance.png
+[2026-08-10 21:43:32] [INFO] - Saved confusion matrix plot to E:\X\Project_College\sentiment-correlation-analyzer\output\figures\confusion_matrix.png
+[2026-08-10 21:43:32] [INFO] - -> Model Comparison Results:
+[2026-08-10 21:43:32] [INFO] - 
+======================================================================
+[2026-08-10 21:43:32] [INFO] - PIPELINE COMPLETED SUCCESSFULLY IN 100.46 SECONDS!
+[2026-08-10 21:43:32] [INFO] - ======================================================================
+[2026-08-10 21:43:32] [INFO] - Output Figures saved to: E:\X\Project_College\sentiment-correlation-analyzer\output\figures
+[2026-08-10 21:43:32] [INFO] - Output Reports saved to: E:\X\Project_College\sentiment-correlation-analyzer\output\reports
+[2026-08-10 21:43:32] [INFO] - 
+To launch the interactive Streamlit Dashboard, run:
+[2026-08-10 21:43:32] [INFO] -   py -m streamlit run app.py
+[2026-08-10 21:43:32] [INFO] - ======================================================================
+[2026-08-10 22:14:09] [INFO] - ======================================================================
+[2026-08-10 22:14:09] [INFO] - STARTING SENTIMENT-TO-PRICE CORRELATION ANALYZER PIPELINE
+[2026-08-10 22:14:09] [INFO] - ======================================================================
+[2026-08-10 22:14:09] [INFO] - 
+[STEP 1/6] Data Collection (NSE Prices + Stock News)...
+[2026-08-10 22:14:09] [INFO] - Fetching stock price data for 20 NSE stocks from 2026-02-11 to 2026-08-10...
+[2026-08-10 22:14:13] [WARNING] - No price data retrieved for TATAMOTORS.NS. Attempting download fallback...
+[2026-08-10 22:14:14] [WARNING] - Failed to fetch price data for TATAMOTORS
+[2026-08-10 22:14:16] [INFO] - Saved raw stock prices (2337 rows) to E:\X\Project_College\sentiment-correlation-analyzer\data\raw\raw_prices.csv
+[2026-08-10 22:14:16] [INFO] - Fetching news data for 20 stocks...
+[2026-08-10 22:14:16] [INFO] - growfin library not found. Using RSS & yfinance news fallback.
+[2026-08-10 22:14:30] [INFO] - Saved raw news headlines (500 rows) to E:\X\Project_College\sentiment-correlation-analyzer\data\raw\raw_news.csv
+[2026-08-10 22:14:30] [INFO] - -> Fetched 2337 daily price records across 19 stocks.
+[2026-08-10 22:14:30] [INFO] - -> Fetched 500 headline articles.
+[2026-08-10 22:14:30] [INFO] - 
+[STEP 2/6] Running FinBERT Sentiment Inference...
+[2026-08-10 22:14:30] [INFO] - Loading FinBERT sentiment model 'ProsusAI/finbert' (device: CPU)...
+[2026-08-10 22:14:33] [INFO] - FinBERT model loaded successfully.
+[2026-08-10 22:14:33] [INFO] - Running sentiment analysis on 500 headlines using FinBERT...
+[2026-08-10 22:14:51] [INFO] - -> Sentiment scoring complete. Sample predictions:
+[2026-08-10 22:14:51] [INFO] - 
+[STEP 3/6] Aggregating Daily Sentiment & Building Feature Matrix...
+[2026-08-10 22:14:51] [INFO] - Building feature matrix and calculating target variables...
+[2026-08-10 22:14:51] [INFO] - Aggregating news sentiment daily per stock...
+[2026-08-10 22:14:51] [INFO] - Saved processed dataset (2261 rows, 22 columns) to E:\X\Project_College\sentiment-correlation-analyzer\data\processed\processed_dataset.csv
+[2026-08-10 22:14:51] [INFO] - -> Feature matrix built with shape (2261, 22).
+[2026-08-10 22:14:51] [INFO] - 
+[STEP 4/6] Computing Pearson Correlations & Generating Visualizations...
+[2026-08-10 22:14:51] [INFO] - Computing Pearson correlations between sentiment and next-day returns...
+[2026-08-10 22:14:52] [INFO] - Saved correlation bar chart to E:\X\Project_College\sentiment-correlation-analyzer\output\figures\correlation_by_stock.png
+[2026-08-10 22:14:52] [INFO] - Saved sentiment vs return scatter plot to E:\X\Project_College\sentiment-correlation-analyzer\output\figures\sentiment_vs_return_scatter.png
+[2026-08-10 22:14:53] [INFO] - Saved time series overlay plot to E:\X\Project_College\sentiment-correlation-analyzer\output\figures\time_series_overlay.png
+[2026-08-10 22:14:53] [INFO] - Saved correlation Markdown report to E:\X\Project_College\sentiment-correlation-analyzer\output\reports\correlation_report.md
+[2026-08-10 22:14:53] [INFO] - Exported correlation PDF report to E:\X\Project_College\sentiment-correlation-analyzer\output\reports\correlation_report.pdf
+[2026-08-10 22:14:53] [INFO] - Computing Pearson correlations between sentiment and next-day returns...
+[2026-08-10 22:14:53] [INFO] - -> Overall Pearson Correlation r = 0.0510 (p = 0.0153)
+[2026-08-10 22:14:53] [INFO] - -> Correlation Report generated at: E:\X\Project_College\sentiment-correlation-analyzer\output\reports\correlation_report.md
+[2026-08-10 22:14:53] [INFO] - 
+[STEP 5/6] Training XGBoost Classifier & Evaluating Against Baselines...
+[2026-08-10 22:14:53] [INFO] - Time-based split created: Train samples = 1808, Test samples = 453
+[2026-08-10 22:14:53] [INFO] - Training XGBoost Classifier...
+[2026-08-10 22:14:56] [INFO] - Saved prediction results table to E:\X\Project_College\sentiment-correlation-analyzer\output\reports\prediction_results.csv
+[2026-08-10 22:14:56] [INFO] - Saved feature importance plot to E:\X\Project_College\sentiment-correlation-analyzer\output\figures\feature_importance.png
+[2026-08-10 22:14:56] [INFO] - Saved confusion matrix plot to E:\X\Project_College\sentiment-correlation-analyzer\output\figures\confusion_matrix.png
+[2026-08-10 22:14:56] [INFO] - -> Model Comparison Results:
+[2026-08-10 22:14:56] [INFO] - 
+======================================================================
+[2026-08-10 22:14:56] [INFO] - PIPELINE COMPLETED SUCCESSFULLY IN 47.24 SECONDS!
+[2026-08-10 22:14:56] [INFO] - ======================================================================
+[2026-08-10 22:14:56] [INFO] - Output Figures saved to: E:\X\Project_College\sentiment-correlation-analyzer\output\figures
+[2026-08-10 22:14:56] [INFO] - Output Reports saved to: E:\X\Project_College\sentiment-correlation-analyzer\output\reports
+[2026-08-10 22:14:56] [INFO] - 
+To launch the interactive Streamlit Dashboard, run:
+[2026-08-10 22:14:56] [INFO] -   py -m streamlit run app.py
+[2026-08-10 22:14:56] [INFO] - ======================================================================
+[2026-08-10 22:19:21] [INFO] - Computing Pearson correlations between sentiment and next-day returns...
+[2026-08-10 22:22:35] [INFO] - Computing Pearson correlations between sentiment and next-day returns...
+[2026-08-10 22:22:47] [INFO] - Time-based split created: Train samples = 1808, Test samples = 453
+[2026-08-10 22:22:47] [INFO] - Training XGBoost Classifier...
+[2026-08-10 22:22:49] [INFO] - Saved prediction results table to E:\X\Project_College\sentiment-correlation-analyzer\output\reports\prediction_results.csv
+[2026-08-10 22:22:49] [INFO] - Saved feature importance plot to E:\X\Project_College\sentiment-correlation-analyzer\output\figures\feature_importance.png
+[2026-08-10 22:22:50] [INFO] - Saved confusion matrix plot to E:\X\Project_College\sentiment-correlation-analyzer\output\figures\confusion_matrix.png
+[2026-08-10 22:25:12] [INFO] - Computing Pearson correlations between sentiment and next-day returns...
+[2026-08-10 22:25:13] [INFO] - Time-based split created: Train samples = 1808, Test samples = 453
+[2026-08-10 22:25:13] [INFO] - Training XGBoost Classifier...
+[2026-08-10 22:25:15] [INFO] - Saved prediction results table to E:\X\Project_College\sentiment-correlation-analyzer\output\reports\prediction_results.csv
+[2026-08-10 22:25:16] [INFO] - Saved feature importance plot to E:\X\Project_College\sentiment-correlation-analyzer\output\figures\feature_importance.png
+[2026-08-10 22:25:16] [INFO] - Saved confusion matrix plot to E:\X\Project_College\sentiment-correlation-analyzer\output\figures\confusion_matrix.png
+[2026-08-10 22:29:15] [INFO] - Computing Pearson correlations between sentiment and next-day returns...
+[2026-08-10 22:29:15] [INFO] - Time-based split created: Train samples = 1808, Test samples = 453
+[2026-08-10 22:29:15] [INFO] - Training XGBoost Classifier...
+[2026-08-10 22:29:18] [INFO] - Saved prediction results table to E:\X\Project_College\sentiment-correlation-analyzer\output\reports\prediction_results.csv
+[2026-08-10 22:29:18] [INFO] - Saved feature importance plot to E:\X\Project_College\sentiment-correlation-analyzer\output\figures\feature_importance.png
+[2026-08-10 22:29:18] [INFO] - Saved confusion matrix plot to E:\X\Project_College\sentiment-correlation-analyzer\output\figures\confusion_matrix.png
+[2026-08-10 22:30:30] [INFO] - Computing Pearson correlations between sentiment and next-day returns...
+[2026-08-10 22:30:30] [INFO] - Time-based split created: Train samples = 1808, Test samples = 453
+[2026-08-10 22:30:30] [INFO] - Training XGBoost Classifier...
+[2026-08-10 22:30:30] [INFO] - Saved prediction results table to E:\X\Project_College\sentiment-correlation-analyzer\output\reports\prediction_results.csv
+[2026-08-10 22:30:31] [INFO] - Saved feature importance plot to E:\X\Project_College\sentiment-correlation-analyzer\output\figures\feature_importance.png
+[2026-08-10 22:30:31] [INFO] - Saved confusion matrix plot to E:\X\Project_College\sentiment-correlation-analyzer\output\figures\confusion_matrix.png
+[2026-08-10 22:45:05] [INFO] - Computing Pearson correlations between sentiment and next-day returns...
+[2026-08-10 22:45:05] [INFO] - Time-based split created: Train samples = 1808, Test samples = 453
+[2026-08-10 22:45:05] [INFO] - Training XGBoost Classifier...
+[2026-08-10 22:45:06] [INFO] - Saved prediction results table to E:\X\Project_College\sentiment-correlation-analyzer\output\reports\prediction_results.csv
+[2026-08-10 22:45:06] [INFO] - Saved feature importance plot to E:\X\Project_College\sentiment-correlation-analyzer\output\figures\feature_importance.png
+[2026-08-10 22:45:06] [INFO] - Saved confusion matrix plot to E:\X\Project_College\sentiment-correlation-analyzer\output\figures\confusion_matrix.png
+[2026-08-10 22:52:40] [INFO] - Computing Pearson correlations between sentiment and next-day returns...
+[2026-08-10 22:52:40] [INFO] - Time-based split created: Train samples = 1808, Test samples = 453
+[2026-08-10 22:52:40] [INFO] - Training XGBoost Classifier...
+[2026-08-10 22:52:43] [INFO] - Saved prediction results table to E:\X\Project_College\sentiment-correlation-analyzer\output\reports\prediction_results.csv
+[2026-08-10 22:52:43] [INFO] - Saved feature importance plot to E:\X\Project_College\sentiment-correlation-analyzer\output\figures\feature_importance.png
+[2026-08-10 22:52:43] [INFO] - Saved confusion matrix plot to E:\X\Project_College\sentiment-correlation-analyzer\output\figures\confusion_matrix.png
+[2026-08-10 22:52:49] [INFO] - Computing Pearson correlations between sentiment and next-day returns...
+[2026-08-10 22:52:49] [INFO] - Time-based split created: Train samples = 1808, Test samples = 453
+[2026-08-10 22:52:49] [INFO] - Training XGBoost Classifier...
+[2026-08-10 22:52:49] [INFO] - Saved prediction results table to E:\X\Project_College\sentiment-correlation-analyzer\output\reports\prediction_results.csv
+[2026-08-10 22:52:49] [INFO] - Saved feature importance plot to E:\X\Project_College\sentiment-correlation-analyzer\output\figures\feature_importance.png
+[2026-08-10 22:52:49] [INFO] - Saved confusion matrix plot to E:\X\Project_College\sentiment-correlation-analyzer\output\figures\confusion_matrix.png
+[2026-08-10 22:56:09] [INFO] - Computing Pearson correlations between sentiment and next-day returns...
+[2026-08-10 22:56:10] [INFO] - Time-based split created: Train samples = 1808, Test samples = 453
+[2026-08-10 22:56:10] [INFO] - Training XGBoost Classifier...
+[2026-08-10 22:56:13] [INFO] - Saved prediction results table to E:\X\Project_College\sentiment-correlation-analyzer\output\reports\prediction_results.csv
+[2026-08-10 22:56:13] [INFO] - Saved feature importance plot to E:\X\Project_College\sentiment-correlation-analyzer\output\figures\feature_importance.png
+[2026-08-10 22:56:13] [INFO] - Saved confusion matrix plot to E:\X\Project_College\sentiment-correlation-analyzer\output\figures\confusion_matrix.png
+[2026-08-10 22:56:21] [INFO] - Computing Pearson correlations between sentiment and next-day returns...
+[2026-08-10 22:56:21] [INFO] - Time-based split created: Train samples = 1808, Test samples = 453
+[2026-08-10 22:56:21] [INFO] - Training XGBoost Classifier...
+[2026-08-10 22:56:21] [INFO] - Saved prediction results table to E:\X\Project_College\sentiment-correlation-analyzer\output\reports\prediction_results.csv
+[2026-08-10 22:56:22] [INFO] - Saved feature importance plot to E:\X\Project_College\sentiment-correlation-analyzer\output\figures\feature_importance.png
+[2026-08-10 22:56:22] [INFO] - Saved confusion matrix plot to E:\X\Project_College\sentiment-correlation-analyzer\output\figures\confusion_matrix.png
+[2026-08-10 22:59:42] [INFO] - Computing Pearson correlations between sentiment and next-day returns...
+[2026-08-10 22:59:42] [INFO] - Time-based split created: Train samples = 1808, Test samples = 453
+[2026-08-10 22:59:42] [INFO] - Training XGBoost Classifier...
+[2026-08-10 22:59:45] [INFO] - Saved prediction results table to E:\X\Project_College\sentiment-correlation-analyzer\output\reports\prediction_results.csv
+[2026-08-10 22:59:45] [INFO] - Saved feature importance plot to E:\X\Project_College\sentiment-correlation-analyzer\output\figures\feature_importance.png
+[2026-08-10 22:59:45] [INFO] - Saved confusion matrix plot to E:\X\Project_College\sentiment-correlation-analyzer\output\figures\confusion_matrix.png
+[2026-08-10 23:00:11] [INFO] - Computing Pearson correlations between sentiment and next-day returns...
+[2026-08-10 23:00:11] [INFO] - Time-based split created: Train samples = 1808, Test samples = 453
+[2026-08-10 23:00:11] [INFO] - Training XGBoost Classifier...
+[2026-08-10 23:00:11] [INFO] - Saved prediction results table to E:\X\Project_College\sentiment-correlation-analyzer\output\reports\prediction_results.csv
+[2026-08-10 23:00:11] [INFO] - Saved feature importance plot to E:\X\Project_College\sentiment-correlation-analyzer\output\figures\feature_importance.png
+[2026-08-10 23:00:11] [INFO] - Saved confusion matrix plot to E:\X\Project_College\sentiment-correlation-analyzer\output\figures\confusion_matrix.png
+[2026-08-10 23:03:20] [INFO] - Computing Pearson correlations between sentiment and next-day returns...
+[2026-08-10 23:03:21] [INFO] - Time-based split created: Train samples = 1808, Test samples = 453
+[2026-08-10 23:03:21] [INFO] - Training XGBoost Classifier...
+[2026-08-10 23:03:23] [INFO] - Saved prediction results table to E:\X\Project_College\sentiment-correlation-analyzer\output\reports\prediction_results.csv
+[2026-08-10 23:03:24] [INFO] - Saved feature importance plot to E:\X\Project_College\sentiment-correlation-analyzer\output\figures\feature_importance.png
+[2026-08-10 23:03:24] [INFO] - Saved confusion matrix plot to E:\X\Project_College\sentiment-correlation-analyzer\output\figures\confusion_matrix.png
