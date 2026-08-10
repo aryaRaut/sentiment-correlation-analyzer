@@ -3,9 +3,9 @@
 ## 1. Executive Summary
 This report analyzes the linear correlation between FinBERT-extracted news sentiment and next-day stock returns across 20 major NSE equities.
 
-- **Total Data Samples Analyzed**: 2261 trading days
-- **Overall Pearson Correlation ($r$)**: `0.051`
-- **Statistical Significance ($p$-value)**: `0.0153`
+- **Total Data Samples Analyzed**: 2360 trading days
+- **Overall Pearson Correlation ($r$)**: `0.0782`
+- **Statistical Significance ($p$-value)**: `0.0001`
 - **Overall Assessment**: Statistically Significant Correlation Detected
 
 ---
@@ -14,25 +14,26 @@ This report analyzes the linear correlation between FinBERT-extracted news senti
 
 | Symbol | Pearson $r$ | $p$-value | Significant (p < 0.05) | Sample Size |
 |--------|-------------|-----------|------------------------|-------------|
-| ASIANPAINT | 0.2082 | 0.0231 | Yes (p < 0.05) | 119 |
-| NTPC | 0.1770 | 0.0541 | No | 119 |
-| AXISBANK | 0.1562 | 0.0899 | No | 119 |
-| MARUTI | 0.1297 | 0.1597 | No | 119 |
-| ICICIBANK | 0.1206 | 0.1915 | No | 119 |
-| HINDUNILVR | 0.1093 | 0.2367 | No | 119 |
-| LT | 0.1030 | 0.2648 | No | 119 |
-| HCLTECH | 0.0903 | 0.3287 | No | 119 |
-| TCS | 0.0708 | 0.4440 | No | 119 |
-| INFY | 0.0694 | 0.4530 | No | 119 |
-| BHARTIARTL | 0.0596 | 0.5199 | No | 119 |
-| WIPRO | 0.0498 | 0.5906 | No | 119 |
-| RELIANCE | 0.0458 | 0.6207 | No | 119 |
-| KOTAKBANK | 0.0118 | 0.8983 | No | 119 |
-| SUNPHARMA | -0.0143 | 0.8771 | No | 119 |
-| HDFCBANK | -0.0618 | 0.5046 | No | 119 |
-| ITC | -0.1259 | 0.1726 | No | 119 |
-| SBIN | -0.1564 | 0.0894 | No | 119 |
-| TITAN | -0.2144 | 0.0192 | Yes (p < 0.05) | 119 |
+| WAAREEENER | 0.3921 | 0.0000 | Yes (p < 0.05) | 118 |
+| ASIANPAINT | 0.2212 | 0.0161 | Yes (p < 0.05) | 118 |
+| NTPC | 0.1876 | 0.0419 | Yes (p < 0.05) | 118 |
+| AXISBANK | 0.1571 | 0.0894 | No | 118 |
+| MARUTI | 0.1430 | 0.1223 | No | 118 |
+| ICICIBANK | 0.1175 | 0.2052 | No | 118 |
+| HINDUNILVR | 0.1111 | 0.2310 | No | 118 |
+| BHARTIARTL | 0.0976 | 0.2931 | No | 118 |
+| HCLTECH | 0.0899 | 0.3327 | No | 118 |
+| INFY | 0.0767 | 0.4094 | No | 118 |
+| TCS | 0.0760 | 0.4135 | No | 118 |
+| WIPRO | 0.0502 | 0.5896 | No | 118 |
+| RELIANCE | 0.0458 | 0.6223 | No | 118 |
+| LT | 0.0254 | 0.7848 | No | 118 |
+| KOTAKBANK | 0.0119 | 0.8981 | No | 118 |
+| SUNPHARMA | -0.0141 | 0.8793 | No | 118 |
+| HDFCBANK | -0.0705 | 0.4479 | No | 118 |
+| ITC | -0.1276 | 0.1686 | No | 118 |
+| TITAN | -0.1440 | 0.1197 | No | 118 |
+| SBIN | -0.1574 | 0.0886 | No | 118 |
 
 ---
 
