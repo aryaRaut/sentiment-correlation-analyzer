@@ -206,7 +206,8 @@ class DataCollector:
             "RELIANCE": 2800, "TCS": 3800, "INFY": 1500, "HDFCBANK": 1600, "ICICIBANK": 1050,
             "ITC": 450, "HINDUNILVR": 2500, "SBIN": 750, "BHARTIARTL": 1100, "KOTAKBANK": 1800,
             "TATAMOTORS": 950, "AXISBANK": 1050, "LT": 3400, "WIPRO": 480, "HCLTECH": 1400,
-            "ASIANPAINT": 2900, "MARUTI": 10500, "SUNPHARMA": 1500, "TITAN": 3600, "NTPC": 320
+            "ASIANPAINT": 2900, "MARUTI": 10500, "SUNPHARMA": 1500, "TITAN": 3600, "NTPC": 320,
+            "WAAREEENER": 3000
         }
         
         np.random.seed(42)

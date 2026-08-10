@@ -256,3 +256,9 @@ To launch the interactive Streamlit Dashboard, run:
 [2026-08-10 23:03:23] [INFO] - Saved prediction results table to E:\X\Project_College\sentiment-correlation-analyzer\output\reports\prediction_results.csv
 [2026-08-10 23:03:24] [INFO] - Saved feature importance plot to E:\X\Project_College\sentiment-correlation-analyzer\output\figures\feature_importance.png
 [2026-08-10 23:03:24] [INFO] - Saved confusion matrix plot to E:\X\Project_College\sentiment-correlation-analyzer\output\figures\confusion_matrix.png
+[2026-08-11 00:02:50] [INFO] - Computing Pearson correlations between sentiment and next-day returns...
+[2026-08-11 00:02:50] [INFO] - Time-based split created: Train samples = 1808, Test samples = 453
+[2026-08-11 00:02:50] [INFO] - Training XGBoost Classifier...
+[2026-08-11 00:02:50] [INFO] - Saved prediction results table to E:\X\Project_College\sentiment-correlation-analyzer\output\reports\prediction_results.csv
+[2026-08-11 00:02:51] [INFO] - Saved feature importance plot to E:\X\Project_College\sentiment-correlation-analyzer\output\figures\feature_importance.png
+[2026-08-11 00:02:51] [INFO] - Saved confusion matrix plot to E:\X\Project_College\sentiment-correlation-analyzer\output\figures\confusion_matrix.png
