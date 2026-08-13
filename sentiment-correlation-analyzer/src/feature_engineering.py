@@ -111,15 +111,15 @@ class FeatureEngineer:
             group["next_day_close"] = group["Close"].shift(-1)
             group["next_day_return"] = (group["next_day_close"] / group["Close"]) - 1.0
             
-            # Binary classification target: 1 if next_day_return > 0 else 0
-            group["target_up"] = np.where(group["next_day_return"] > 0, 1, 0)
+            # Binary classification target: 1 if next_day_return > 0 else 0 (NaN for latest day)
+            group["target_up"] = np.where(group["next_day_return"].isna(), np.nan, np.where(group["next_day_return"] > 0, 1.0, 0.0))
 
             processed_stocks.append(group)
 
         final_df = pd.concat(processed_stocks, ignore_index=True)
         
-        # Drop rows where lag or target variables are NaN (last day per stock has no next_day_return)
-        final_df = final_df.dropna(subset=["next_day_return", "sentiment_lag1", "sentiment_lag2", "sentiment_lag3"]).reset_index(drop=True)
+        # Only drop initial rows where lag features are NaN (keep latest day where next_day_return is NaN)
+        final_df = final_df.dropna(subset=["sentiment_lag1", "sentiment_lag2", "sentiment_lag3"]).reset_index(drop=True)
         
         processed_file = DATA_PROCESSED_DIR / "processed_dataset.csv"
         final_df.to_csv(processed_file, index=False)

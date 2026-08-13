@@ -50,14 +50,17 @@ class DataCollector:
         logger.info(f"Fetching stock price data for {len(self.stocks)} NSE stocks from {self.start_date} to {self.end_date}...")
         all_prices = []
 
+        fetch_start = self.start_date.strftime("%Y-%m-%d")
+        fetch_end = (self.end_date + datetime.timedelta(days=2)).strftime("%Y-%m-%d")
+        
         for symbol in tqdm(self.stocks, desc="Fetching Stock Prices"):
             yf_symbol = get_symbol_with_suffix(symbol)
             try:
                 ticker = yf.Ticker(yf_symbol)
-                df = ticker.history(start=self.start_date.strftime("%Y-%m-%d"), end=self.end_date.strftime("%Y-%m-%d"))
+                df = ticker.history(start=fetch_start, end=fetch_end)
                 if df.empty:
                     logger.warning(f"No price data retrieved for {yf_symbol}. Attempting download fallback...")
-                    df = yf.download(yf_symbol, start=self.start_date, end=self.end_date, progress=False)
+                    df = yf.download(yf_symbol, start=fetch_start, end=fetch_end, progress=False)
 
                 if not df.empty:
                     df = df.reset_index()
