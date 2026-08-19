@@ -4,9 +4,9 @@
 This report analyzes the linear correlation between FinBERT-extracted news sentiment and next-day stock returns across 20 major NSE equities.
 
 - **Total Data Samples Analyzed**: 2583 trading days
-- **Overall Pearson Correlation ($r$)**: `0.038`
-- **Statistical Significance ($p$-value)**: `0.0538`
-- **Overall Assessment**: Weak / Moderate Correlation
+- **Overall Pearson Correlation ($r$)**: `0.0405`
+- **Statistical Significance ($p$-value)**: `0.0396`
+- **Overall Assessment**: Statistically Significant Correlation Detected
 
 ---
 
@@ -14,27 +14,27 @@ This report analyzes the linear correlation between FinBERT-extracted news senti
 
 | Symbol | Pearson $r$ | $p$-value | Significant (p < 0.05) | Sample Size |
 |--------|-------------|-----------|------------------------|-------------|
-| WAAREEENER | 0.2334 | 0.0094 | Yes (p < 0.05) | 123 |
-| WIPRO | 0.1855 | 0.0400 | Yes (p < 0.05) | 123 |
-| AXISBANK | 0.1098 | 0.2265 | No | 123 |
-| ITC | 0.1026 | 0.2588 | No | 123 |
-| SUNPHARMA | 0.0713 | 0.4331 | No | 123 |
-| LT | 0.0634 | 0.4857 | No | 123 |
-| TCS | 0.0630 | 0.4886 | No | 123 |
-| BHARTIARTL | 0.0438 | 0.6305 | No | 123 |
-| HDFCBANK | 0.0348 | 0.7023 | No | 123 |
-| BAJFINANCE | 0.0301 | 0.7411 | No | 123 |
-| SBIN | 0.0087 | 0.9235 | No | 123 |
-| HINDUNILVR | -0.0118 | 0.8967 | No | 123 |
-| INFY | -0.0180 | 0.8435 | No | 123 |
-| TITAN | -0.0189 | 0.8356 | No | 123 |
-| ASIANPAINT | -0.0212 | 0.8160 | No | 123 |
-| NTPC | -0.0263 | 0.7724 | No | 123 |
-| MARUTI | -0.0317 | 0.7282 | No | 123 |
-| ICICIBANK | -0.0392 | 0.6670 | No | 123 |
-| HCLTECH | -0.0405 | 0.6562 | No | 123 |
-| RELIANCE | -0.0993 | 0.2747 | No | 123 |
-| KOTAKBANK | -0.1211 | 0.1822 | No | 123 |
+| WAAREEENER | 0.2337 | 0.0093 | Yes (p < 0.05) | 123 |
+| WIPRO | 0.1870 | 0.0383 | Yes (p < 0.05) | 123 |
+| ITC | 0.1284 | 0.1568 | No | 123 |
+| AXISBANK | 0.1055 | 0.2453 | No | 123 |
+| TCS | 0.1049 | 0.2484 | No | 123 |
+| SUNPHARMA | 0.0774 | 0.3950 | No | 123 |
+| LT | 0.0465 | 0.6096 | No | 123 |
+| BHARTIARTL | 0.0430 | 0.6364 | No | 123 |
+| HDFCBANK | 0.0361 | 0.6918 | No | 123 |
+| SBIN | 0.0066 | 0.9419 | No | 123 |
+| BAJFINANCE | 0.0065 | 0.9435 | No | 123 |
+| INFY | -0.0171 | 0.8511 | No | 123 |
+| TITAN | -0.0180 | 0.8429 | No | 123 |
+| HINDUNILVR | -0.0187 | 0.8369 | No | 123 |
+| ASIANPAINT | -0.0212 | 0.8161 | No | 123 |
+| MARUTI | -0.0319 | 0.7260 | No | 123 |
+| NTPC | -0.0362 | 0.6913 | No | 123 |
+| ICICIBANK | -0.0390 | 0.6683 | No | 123 |
+| HCLTECH | -0.0398 | 0.6619 | No | 123 |
+| RELIANCE | -0.0656 | 0.4710 | No | 123 |
+| KOTAKBANK | -0.1232 | 0.1747 | No | 123 |
 
 ---
 
