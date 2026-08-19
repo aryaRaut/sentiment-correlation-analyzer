@@ -56,14 +56,16 @@ class SentimentPredictor:
     def time_based_split(self) -> tuple:
         """
         Performs a temporal train/test split (no shuffling to prevent look-ahead bias).
+        Drops unlabeled rows (where target_up is NaN) from train/test evaluation.
         
         Returns:
             tuple: (X_train, X_test, y_train, y_test, df_test)
         """
-        split_idx = int(len(self.df) * self.train_ratio)
+        labeled_df = self.df.dropna(subset=[self.TARGET_COL]).reset_index(drop=True)
+        split_idx = int(len(labeled_df) * self.train_ratio)
         
-        train_df = self.df.iloc[:split_idx]
-        test_df = self.df.iloc[split_idx:]
+        train_df = labeled_df.iloc[:split_idx]
+        test_df = labeled_df.iloc[split_idx:]
 
         X_train = train_df[self.FEATURE_COLS]
         y_train = train_df[self.TARGET_COL]

@@ -91,23 +91,39 @@ class FeatureEngineer:
         for symbol, group in merged.groupby("Symbol"):
             group = group.sort_values("Date").copy()
 
-            # Lag features
-            group["sentiment_lag1"] = group["avg_sentiment"].shift(1)
-            group["sentiment_lag2"] = group["avg_sentiment"].shift(2)
-            group["sentiment_lag3"] = group["avg_sentiment"].shift(3)
+            # Exponentially decaying sentiment memory (effective_sentiment)
+            raw_sent = group["avg_sentiment"].values
+            news_cnt = group["news_count"].values
+            eff_sent = np.zeros(len(group))
+            
+            curr_s = 0.0
+            for k in range(len(group)):
+                if news_cnt[k] > 0:
+                    curr_s = raw_sent[k]
+                else:
+                    curr_s = curr_s * 0.85
+                eff_sent[k] = round(curr_s, 4)
+                
+            group["effective_sentiment"] = eff_sent
+            group["avg_sentiment"] = np.where(group["avg_sentiment"] == 0.0, group["effective_sentiment"], group["avg_sentiment"])
+
+            # Lag features based on decaying sentiment
+            group["sentiment_lag1"] = group["effective_sentiment"].shift(1).fillna(0.0)
+            group["sentiment_lag2"] = group["effective_sentiment"].shift(2).fillna(0.0)
+            group["sentiment_lag3"] = group["effective_sentiment"].shift(3).fillna(0.0)
 
             # Rolling averages
-            group["sentiment_ma3"] = group["avg_sentiment"].rolling(window=3, min_periods=1).mean()
-            group["sentiment_ma5"] = group["avg_sentiment"].rolling(window=5, min_periods=1).mean()
+            group["sentiment_ma3"] = group["effective_sentiment"].rolling(window=3, min_periods=1).mean()
+            group["sentiment_ma5"] = group["effective_sentiment"].rolling(window=5, min_periods=1).mean()
 
             # Rolling volatility (std of sentiment over 5 days)
-            group["sentiment_rolling_std_5"] = group["avg_sentiment"].rolling(window=5, min_periods=1).std().fillna(0.0)
+            group["sentiment_rolling_std_5"] = group["effective_sentiment"].rolling(window=5, min_periods=1).std().fillna(0.0)
 
-            # News volume lag
+            # News volume lag and 5-day rolling news volume
             group["news_volume_lag1"] = group["news_count"].shift(1).fillna(0).astype(int)
 
             # Price returns and Target Variable calculation
-            group["current_day_return"] = group["Close"].pct_change()
+            group["current_day_return"] = group["Close"].pct_change().fillna(0.0)
             group["next_day_close"] = group["Close"].shift(-1)
             group["next_day_return"] = (group["next_day_close"] / group["Close"]) - 1.0
             

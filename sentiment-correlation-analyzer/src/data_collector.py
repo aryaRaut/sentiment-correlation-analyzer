@@ -154,27 +154,32 @@ class DataCollector:
     def _fetch_rss_news(self, symbol: str) -> list:
         """Fetches news headlines from Google News RSS feed for an NSE stock."""
         items = []
-        try:
-            query = f"{symbol} NSE India stock news"
-            url = f"https://news.google.com/rss/search?q={query.replace(' ', '%20')}&hl=en-IN&gl=IN&ceid=IN:en"
-            feed = feedparser.parse(url)
-            
-            for entry in feed.entries[:25]:
-                pub_date = datetime.date.today()
-                if hasattr(entry, 'published_parsed') and entry.published_parsed:
-                    pub_date = datetime.date(*entry.published_parsed[:3])
+        queries = [f"{symbol} NSE India stock news", f"{symbol} share price", f"{symbol} quarterly results"]
+        seen_titles = set()
+        
+        for q in queries:
+            try:
+                url = f"https://news.google.com/rss/search?q={q.replace(' ', '%20')}&hl=en-IN&gl=IN&ceid=IN:en"
+                feed = feedparser.parse(url)
                 
-                title = entry.get('title', '')
-                if title:
-                    items.append({
-                        "Date": pub_date,
-                        "Symbol": symbol,
-                        "Headline": title,
-                        "Source": entry.get('source', {}).get('title', 'Google News'),
-                        "URL": entry.get('link', '')
-                    })
-        except Exception as e:
-            logger.debug(f"RSS fetch error for {symbol}: {e}")
+                for entry in feed.entries[:20]:
+                    title = entry.get('title', '').strip()
+                    if title and title not in seen_titles:
+                        seen_titles.add(title)
+                        pub_date = datetime.date.today()
+                        if hasattr(entry, 'published_parsed') and entry.published_parsed:
+                            pub_date = datetime.date(*entry.published_parsed[:3])
+                        
+                        items.append({
+                            "Date": pub_date,
+                            "Symbol": symbol,
+                            "Headline": title,
+                            "Source": entry.get('source', {}).get('title', 'Google News'),
+                            "URL": entry.get('link', '')
+                        })
+            except Exception as e:
+                logger.debug(f"RSS fetch error for {symbol} query '{q}': {e}")
+                
         return items
 
     def _fetch_yf_news(self, symbol: str) -> list:
@@ -208,7 +213,7 @@ class DataCollector:
         base_prices = {
             "RELIANCE": 2800, "TCS": 3800, "INFY": 1500, "HDFCBANK": 1600, "ICICIBANK": 1050,
             "ITC": 450, "HINDUNILVR": 2500, "SBIN": 750, "BHARTIARTL": 1100, "KOTAKBANK": 1800,
-            "TATAMOTORS": 950, "AXISBANK": 1050, "LT": 3400, "WIPRO": 480, "HCLTECH": 1400,
+            "BAJFINANCE": 6800, "AXISBANK": 1050, "LT": 3400, "WIPRO": 480, "HCLTECH": 1400,
             "ASIANPAINT": 2900, "MARUTI": 10500, "SUNPHARMA": 1500, "TITAN": 3600, "NTPC": 320,
             "WAAREEENER": 3000
         }

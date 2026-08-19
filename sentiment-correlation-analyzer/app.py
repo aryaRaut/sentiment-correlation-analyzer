@@ -130,11 +130,32 @@ with tab1:
     if not stock_df.empty:
         col1, col2, col3, col4 = st.columns(4)
         latest = stock_df.iloc[-1]
+        eff_sentiment = latest.get('effective_sentiment', latest['avg_sentiment'])
+        news_cnt = int(latest['news_count'])
+        recent_news_cnt = int(stock_df.tail(5)['news_count'].sum())
         
         col1.metric("Latest Close", f"₹{latest['Close']:.2f}")
-        col2.metric("Mean Sentiment", f"{latest['avg_sentiment']:.3f}")
-        col3.metric("News Count", int(latest['news_count']))
-        col4.metric("Target (Next-Day Direction)", "UP 🟢" if latest['target_up'] == 1 else "DOWN 🔴")
+        col2.metric("Mean Sentiment", f"{eff_sentiment:+.3f}")
+        col3.metric("News Count", f"{news_cnt}", f"5D Volume: {recent_news_cnt}")
+        
+        # Check if actual target_up is known or pending
+        if pd.isna(latest.get('target_up')) or np.isnan(latest.get('target_up', np.nan)):
+            # Predict direction for tomorrow using trained XGBoost model
+            sp = SentimentPredictor(processed_df)
+            X_train, X_test, y_train, y_test, _ = sp.time_based_split()
+            sp.train_xgboost(X_train, y_train)
+            
+            latest_features = pd.DataFrame([latest[SentimentPredictor.FEATURE_COLS]])
+            prob_up = float(sp.model.predict_proba(latest_features)[0][1])
+            pred_class = 1 if prob_up >= 0.5 else 0
+            conf = max(prob_up, 1.0 - prob_up)
+            
+            target_display = "PREDICTED UP 🟢" if pred_class == 1 else "PREDICTED DOWN 🔴"
+            col4.metric("AI Prediction (Tomorrow)", target_display, f"Conf: {conf:.1%}")
+        elif latest['target_up'] == 1:
+            col4.metric("Target (Next-Day Direction)", "UP 🟢")
+        else:
+            col4.metric("Target (Next-Day Direction)", "DOWN 🔴")
 
         # Interactive Plotly Dual-Axis Chart
         fig = make_subplots(specs=[[{"secondary_y": True}]])
