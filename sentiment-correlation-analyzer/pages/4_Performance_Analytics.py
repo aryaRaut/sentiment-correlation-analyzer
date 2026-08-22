@@ -140,10 +140,14 @@ tab1, tab2, tab3 = st.tabs(["📅 Yesterday", "📆 Past Week (7 Days)", "📅 P
 with tab1:
     st.subheader(f"Yesterday's Performance Overview ({max_date})")
     
+    # Filter for yesterday's data
     yesterday_df = df_filtered[df_filtered["date"] == max_date]
     
+    # --- FIX: Drop rows with missing critical values ---
+    yesterday_df = yesterday_df.dropna(subset=["actual_direction", "predicted_direction", "next_day_return"])
+    
     if yesterday_df.empty:
-        st.warning("⚠️ Insufficient data available for Yesterday.")
+        st.warning("⚠️ Insufficient valid data (no rows with both actual and predicted direction) for Yesterday.")
     elif selected_stock != "All Stocks":
         y_row = yesterday_df.iloc[0]
         actual_up = y_row["actual_direction"] == 1
@@ -232,9 +236,13 @@ with tab2:
     min_date_7d = max_date - pd.Timedelta(days=7)
     df_7d = df_filtered[df_filtered["date"] >= min_date_7d].copy()
     
+    # --- FIX: Drop rows with missing actual/predicted direction ---
+    df_7d = df_7d.dropna(subset=["actual_direction", "predicted_direction"])
+    
     if len(df_7d) < 1:
-        st.warning("⚠️ Insufficient data for Past Week (7 Days).")
+        st.warning("⚠️ Insufficient valid data (no rows with both actual and predicted direction) for the past week.")
     else:
+        # Now safe to convert to int (no NaN values)
         y_true_7d = df_7d["actual_direction"].astype(int)
         y_pred_7d = df_7d["predicted_direction"].astype(int)
         
@@ -294,9 +302,13 @@ with tab3:
     min_date_30d = max_date - pd.Timedelta(days=30)
     df_30d = df_filtered[df_filtered["date"] >= min_date_30d].copy()
     
+    # --- FIX: Drop rows with missing actual/predicted direction ---
+    df_30d = df_30d.dropna(subset=["actual_direction", "predicted_direction"])
+    
     if len(df_30d) < 1:
-        st.warning("⚠️ Insufficient data for Past Month (30 Days).")
+        st.warning("⚠️ Insufficient valid data (no rows with both actual and predicted direction) for the past month.")
     else:
+        # Now safe to convert to int (no NaN values)
         y_true_30d = df_30d["actual_direction"].astype(int)
         y_pred_30d = df_30d["predicted_direction"].astype(int)
         
@@ -410,8 +422,9 @@ with tab3:
             fig_roll.update_layout(template="plotly_dark", height=380, yaxis_range=[0, 100])
             st.plotly_chart(fig_roll, use_container_width=True)
 
-        # Feature 5: Top 3 "Big Miss" Analysis for Past Month
         st.markdown("---")
+        
+        # Feature 5: Top 3 "Big Miss" Analysis for Past Month
         with st.expander("❌ Biggest Misses (Past 30 Days)", expanded=False):
             misses_30d = df_30d[df_30d["actual_direction"] != df_30d["predicted_direction"]].copy()
             if misses_30d.empty:

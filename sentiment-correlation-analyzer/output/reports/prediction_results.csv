@@ -1,4 +1,4 @@
 Model,Accuracy,Precision,Recall,F1 Score
-XGBoost Classifier,0.4932,0.4793,0.4111,0.4426
-Random Baseline (50%),0.4874,0.4773,0.498,0.4874
-Same-as-Yesterday Baseline,0.4758,0.4651,0.4743,0.4697
+XGBoost Classifier,0.4779,0.4615,0.4,0.4286
+Random Baseline (50%),0.4952,0.4851,0.5098,0.4971
+Same-as-Yesterday Baseline,0.4587,0.4479,0.4549,0.4514
