@@ -6,7 +6,7 @@ Comprehensive model tracking dashboard featuring:
 - P&L Backtest Simulation (AI Strategy vs Buy & Hold)
 - Confusion Matrix Heatmap
 - 5-Day Rolling Accuracy Trend
-- Top 3 "Big Miss" Forensic Headline Analysis
+- Top "Big Miss" Forensic Headline Analysis
 - Sector-Wise Accuracy Bar Chart
 """
 
@@ -35,45 +35,209 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom Glassmorphic Styling
+# Custom Styling (Premium Dark Theme Financial Dashboard)
 st.markdown("""
 <style>
-    .main-header {
-        font-size: 2.2rem;
-        font-weight: 700;
-        background: linear-gradient(90deg, #1f77b4, #2ca02c);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        margin-bottom: 0.5rem;
-    }
-    .metric-card {
-        background-color: #1e222d;
-        border-radius: 8px;
-        padding: 16px;
-        border: 1px solid #2a2e39;
-        text-align: center;
-        margin-bottom: 10px;
-    }
-    .card-title {
-        font-size: 0.85rem;
-        color: #787b86;
-        font-weight: 600;
-        margin-bottom: 6px;
-        text-transform: uppercase;
-    }
-    .card-value {
-        font-size: 1.5rem;
-        font-weight: bold;
-    }
-    .card-value-green { color: #26a69a; }
-    .card-value-red { color: #ef5350; }
-    .card-value-blue { color: #2962ff; }
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+* {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Main Background */
+.stApp {
+    background: linear-gradient(135deg, #0f1724 0%, #1a2332 100%);
+}
+
+/* Headers */
+h1, h2, h3, h4, h5, h6 {
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    letter-spacing: -0.02em !important;
+}
+
+h1 { font-size: 2rem !important; }
+h2 { font-size: 1.5rem !important; }
+h3 { font-size: 1.25rem !important; }
+
+/* Section Header */
+.section-header {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #ffffff;
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid rgba(41, 98, 255, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Metric Card */
+.metric-card {
+    background: linear-gradient(145deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
+    border-radius: 12px;
+    padding: 20px 24px;
+    border-left: 4px solid #2962ff;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    margin-bottom: 12px;
+    height: 100%;
+}
+.metric-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+.metric-card .card-title {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #94a3b8;
+    font-weight: 500;
+}
+.metric-card .card-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-top: 4px;
+}
+.metric-card .card-value-blue { color: #2962ff; }
+.metric-card .card-value-green { color: #22c55e; }
+.metric-card .card-value-red { color: #ef4444; }
+.metric-card .card-value-gold { color: #f9a825; }
+
+/* Chart Container */
+.chart-container {
+    background: rgba(30, 41, 59, 0.5);
+    border-radius: 12px;
+    padding: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    margin-bottom: 16px;
+}
+
+/* Divider */
+.custom-divider {
+    margin: 28px 0;
+    border: 0;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(41, 98, 255, 0.3), transparent);
+}
+
+/* Tabs Customization */
+.stTabs [data-baseweb="tab-list"] {
+    gap: 8px;
+    background-color: rgba(30, 41, 59, 0.5);
+    border-radius: 8px;
+    padding: 4px;
+}
+.stTabs [data-baseweb="tab"] {
+    border-radius: 6px;
+    padding: 8px 16px;
+    color: #94a3b8;
+    font-weight: 500;
+}
+.stTabs [data-baseweb="tab"][aria-selected="true"] {
+    background-color: #2962ff;
+    color: #ffffff;
+}
+
+/* Dataframe Styling */
+.stDataFrame {
+    background: rgba(30, 41, 59, 0.5) !important;
+    border-radius: 12px !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+.stDataFrame thead {
+    background: rgba(41, 98, 255, 0.2) !important;
+}
+.stDataFrame tbody tr:hover {
+    background: rgba(41, 98, 255, 0.1) !important;
+}
+
+/* Selectbox Styling */
+.stSelectbox > div > div {
+    background-color: rgba(30, 41, 59, 0.8) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 8px !important;
+    color: #ffffff !important;
+}
+.stSelectbox > div > div:hover {
+    border-color: #2962ff !important;
+}
+
+/* Metric Boxes */
+[data-testid="stMetricValue"] {
+    font-size: 2rem !important;
+    font-weight: 700 !important;
+}
+[data-testid="stMetricLabel"] {
+    color: #94a3b8 !important;
+    font-weight: 500 !important;
+}
+
+/* Success/Warning/Info Boxes */
+.stAlert {
+    border-radius: 12px !important;
+    background-color: rgba(30, 41, 59, 0.8) !important;
+    border-left: 4px solid #2962ff !important;
+}
+
+/* Expander Styling (keep but minimal) */
+.streamlit-expanderHeader {
+    background-color: rgba(30, 41, 59, 0.5) !important;
+    border-radius: 8px !important;
+    color: #ffffff !important;
+}
+.streamlit-expanderContent {
+    background-color: rgba(30, 41, 59, 0.3) !important;
+    border-radius: 0 0 8px 8px !important;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: rgba(30, 41, 59, 0.5);
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb {
+    background: #2962ff;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #1a73e8;
+}
+
+/* Success Message */
+.success-message {
+    background: rgba(34, 197, 94, 0.1);
+    border-left: 4px solid #22c55e;
+    padding: 12px 16px;
+    border-radius: 8px;
+    color: #22c55e;
+    font-weight: 500;
+}
+
+/* Table Container */
+.table-container {
+    background: rgba(30, 41, 59, 0.5);
+    border-radius: 12px;
+    padding: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    margin-top: 12px;
+}
 </style>
 """, unsafe_allow_html=True)
 
 # Main Title & Subheader
-st.markdown("<div class='main-header'>🎯 Model Performance Monitoring & Analytics</div>", unsafe_allow_html=True)
-st.caption("Empirical Validation of XGBoost Sentiment Model: Real-Time Accuracy, P&L Backtest, Confusion Matrix & Sector Drift")
+st.markdown("""
+<div style="padding-bottom: 16px; border-bottom: 2px solid rgba(41, 98, 255, 0.3); margin-bottom: 24px;">
+    <h1 style="margin: 0; padding: 0;">🎯 Model Performance Monitoring & Analytics</h1>
+    <p style="color: #94a3b8; margin: 6px 0 0 0; font-size: 0.95rem;">Empirical Validation of XGBoost Sentiment Model: Real-Time Accuracy, P&L Backtest, Confusion Matrix & Sector Drift</p>
+</div>
+""", unsafe_allow_html=True)
 
 # Load Data via Cached Loader
 with st.spinner("Loading performance analytics & model inferences..."):
@@ -138,16 +302,14 @@ tab1, tab2, tab3 = st.tabs(["📅 Yesterday", "📆 Past Week (7 Days)", "📅 P
 # TAB 1: Yesterday Performance
 # ---------------------------------------------------------
 with tab1:
-    st.subheader(f"Yesterday's Performance Overview ({max_date})")
+    st.markdown(f'<div class="section-header">📅 Yesterday\'s Performance Overview ({max_date})</div>', unsafe_allow_html=True)
     
     # Filter for yesterday's data
     yesterday_df = df_filtered[df_filtered["date"] == max_date]
-    
-    # --- FIX: Drop rows with missing critical values ---
     yesterday_df = yesterday_df.dropna(subset=["actual_direction", "predicted_direction", "next_day_return"])
     
     if yesterday_df.empty:
-        st.warning("⚠️ Insufficient valid data (no rows with both actual and predicted direction) for Yesterday.")
+        st.warning("⚠️ Insufficient valid data for Yesterday.")
     elif selected_stock != "All Stocks":
         y_row = yesterday_df.iloc[0]
         actual_up = y_row["actual_direction"] == 1
@@ -160,9 +322,10 @@ with tab1:
             act_text = "UP 🟢" if actual_up else "DOWN 🔴"
             act_color = "card-value-green" if actual_up else "card-value-red"
             st.markdown(f"""
-            <div class='metric-card'>
-                <div class='card-title'>Actual Movement</div>
-                <div class='card-value {act_color}'>{act_text} ({ret_pct:+.2%})</div>
+            <div class="metric-card">
+                <div class="card-title">Actual Movement</div>
+                <div class="card-value {act_color}">{act_text}</div>
+                <div class="card-subtext">Return: {ret_pct:+.2%}</div>
             </div>
             """, unsafe_allow_html=True)
             
@@ -170,9 +333,10 @@ with tab1:
             pred_text = "UP 🟢" if pred_up else "DOWN 🔴"
             pred_color = "card-value-green" if pred_up else "card-value-red"
             st.markdown(f"""
-            <div class='metric-card'>
-                <div class='card-title'>Model Prediction</div>
-                <div class='card-value {pred_color}'>{pred_text}</div>
+            <div class="metric-card">
+                <div class="card-title">Model Prediction</div>
+                <div class="card-value {pred_color}">{pred_text}</div>
+                <div class="card-subtext">XGBoost Signal</div>
             </div>
             """, unsafe_allow_html=True)
             
@@ -180,9 +344,10 @@ with tab1:
             corr_text = "YES 🟢" if was_correct else "NO 🔴"
             corr_color = "card-value-green" if was_correct else "card-value-red"
             st.markdown(f"""
-            <div class='metric-card'>
-                <div class='card-title'>Was it Right?</div>
-                <div class='card-value {corr_color}'>{corr_text}</div>
+            <div class="metric-card">
+                <div class="card-title">Was it Right?</div>
+                <div class="card-value {corr_color}">{corr_text}</div>
+                <div class="card-subtext">Direction Match</div>
             </div>
             """, unsafe_allow_html=True)
     else:
@@ -195,27 +360,30 @@ with tab1:
         c1, c2, c3 = st.columns(3)
         with c1:
             st.markdown(f"""
-            <div class='metric-card'>
-                <div class='card-title'>Universe Yesterday Accuracy</div>
-                <div class='card-value card-value-blue'>{acc_pct:.1f}%</div>
+            <div class="metric-card">
+                <div class="card-title">Universe Yesterday Accuracy</div>
+                <div class="card-value card-value-blue">{acc_pct:.1f}%</div>
+                <div class="card-subtext">Across {total_stocks} Stocks</div>
             </div>
             """, unsafe_allow_html=True)
         with c2:
             st.markdown(f"""
-            <div class='metric-card'>
-                <div class='card-title'>Correct Predictions</div>
-                <div class='card-value card-value-green'>{correct_preds} / {total_stocks} Stocks</div>
+            <div class="metric-card">
+                <div class="card-title">Correct Predictions</div>
+                <div class="card-value card-value-green">{correct_preds} / {total_stocks}</div>
+                <div class="card-subtext">Successful Hits</div>
             </div>
             """, unsafe_allow_html=True)
         with c3:
             st.markdown(f"""
-            <div class='metric-card'>
-                <div class='card-title'>Actual Up vs Pred Up</div>
-                <div class='card-value card-value-blue'>{actual_ups} Up / {pred_ups} Pred Up</div>
+            <div class="metric-card">
+                <div class="card-title">Actual Up vs Pred Up</div>
+                <div class="card-value card-value-gold">{actual_ups} Up / {pred_ups} Pred</div>
+                <div class="card-subtext">Bullish Distribution</div>
             </div>
             """, unsafe_allow_html=True)
             
-        st.markdown("##### Yesterday's Prediction Breakdown Across Universe")
+        st.markdown("### Yesterday's Prediction Breakdown Across Universe")
         y_summary = yesterday_df[["stock", "actual_direction", "predicted_direction", "next_day_return"]].copy()
         y_summary["Actual Movement"] = y_summary["actual_direction"].apply(lambda x: "UP 🟢" if x == 1 else "DOWN 🔴")
         y_summary["Model Prediction"] = y_summary["predicted_direction"].apply(lambda x: "UP 🟢" if x == 1 else "DOWN 🔴")
@@ -224,91 +392,132 @@ with tab1:
         
         st.dataframe(
             y_summary[["stock", "Actual Movement", "Model Prediction", "Correct?", "Next-Day Return"]].rename(columns={"stock": "Stock Ticker"}),
-            use_container_width=True
+            use_container_width=True,
+            hide_index=True
         )
+
+    # ❌ Biggest Misses Section (Visible Table, NO expander for table!)
+    st.markdown('<div class="custom-divider"></div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-header">❌ Biggest Misses</div>', unsafe_allow_html=True)
+
+    misses_yest = yesterday_df[yesterday_df["actual_direction"] != yesterday_df["predicted_direction"]].copy()
+    if misses_yest.empty:
+        st.markdown('<div class="success-message">🎉 No prediction misses in this period!</div>', unsafe_allow_html=True)
+    else:
+        misses_yest["abs_return"] = misses_yest["next_day_return"].abs()
+        top_misses_yest = misses_yest.sort_values("abs_return", ascending=False).head(5)
+
+        miss_df = top_misses_yest[["date", "stock", "actual_direction", "predicted_direction", "next_day_return"]].copy()
+        miss_df["Actual"] = miss_df["actual_direction"].apply(lambda x: "UP 🟢" if x == 1 else "DOWN 🔴")
+        miss_df["Predicted"] = miss_df["predicted_direction"].apply(lambda x: "UP 🟢" if x == 1 else "DOWN 🔴")
+        miss_df["Return"] = miss_df["next_day_return"].apply(lambda x: f"{x:+.2%}")
+
+        st.dataframe(
+            miss_df[["date", "stock", "Actual", "Predicted", "Return"]].rename(
+                columns={"date": "Date", "stock": "Stock"}
+            ),
+            use_container_width=True,
+            hide_index=True
+        )
+
+        miss_table_yest = fetch_headlines_for_misses(top_misses_yest, news_df)
+        with st.expander("📰 View News Context for Misses", expanded=False):
+            for _, mrow in miss_table_yest.iterrows():
+                st.markdown(f"**{mrow['Date']} - {mrow['Stock']}**")
+                st.caption(f"📰 {mrow['Headlines']}")
 
 # ---------------------------------------------------------
 # TAB 2: Past Week (7 Days)
 # ---------------------------------------------------------
 with tab2:
-    st.subheader(f"Past Week Performance (Last 7 Days ending {max_date})")
+    st.markdown(f'<div class="section-header">📆 Past Week Performance (Last 7 Days ending {max_date})</div>', unsafe_allow_html=True)
     
     min_date_7d = max_date - pd.Timedelta(days=7)
     df_7d = df_filtered[df_filtered["date"] >= min_date_7d].copy()
-    
-    # --- FIX: Drop rows with missing actual/predicted direction ---
-    df_7d = df_7d.dropna(subset=["actual_direction", "predicted_direction"])
+    df_7d = df_7d.dropna(subset=["actual_direction", "predicted_direction", "next_day_return"])
     
     if len(df_7d) < 1:
-        st.warning("⚠️ Insufficient valid data (no rows with both actual and predicted direction) for the past week.")
+        st.warning("⚠️ Insufficient valid data for the past week.")
     else:
-        # Now safe to convert to int (no NaN values)
         y_true_7d = df_7d["actual_direction"].astype(int)
         y_pred_7d = df_7d["predicted_direction"].astype(int)
-        
         acc_7d = accuracy_score(y_true_7d, y_pred_7d) * 100
         
-        # Weekly Accuracy Metric
-        st.metric("📆 Weekly Accuracy (7 Days)", f"{acc_7d:.1f}%")
+        # Weekly Accuracy Metric Card
+        st.markdown(f"""
+        <div class="metric-card" style="margin-bottom: 20px;">
+            <div class="card-title">📆 Weekly Accuracy (7 Days)</div>
+            <div class="card-value card-value-gold">{acc_7d:.1f}%</div>
+            <div class="card-subtext">Evaluated across past 7 trading days</div>
+        </div>
+        """, unsafe_allow_html=True)
         
         col_cm, col_info = st.columns([1, 1])
         with col_cm:
-            st.markdown("##### Confusion Matrix (Counts)")
+            st.markdown("### Confusion Matrix (Counts)")
             cm_7d = confusion_matrix(y_true_7d, y_pred_7d, labels=[0, 1])
             cm_df_7d = pd.DataFrame(
                 cm_7d,
                 index=["Actual Down (0)", "Actual Up (1)"],
                 columns=["Predicted Down (0)", "Predicted Up (1)"]
             )
-            st.dataframe(cm_df_7d.style.highlight_max(axis=None, color="#1b5e20"), use_container_width=True)
+            st.dataframe(cm_df_7d.style.highlight_max(axis=None, color="rgba(34, 197, 94, 0.3)"), use_container_width=True)
             
         with col_info:
-            st.markdown("##### 7-Day Sample Summary")
+            st.markdown("### 7-Day Sample Summary")
             total_samples = len(df_7d)
             correct_samples = int((y_true_7d == y_pred_7d).sum())
-            st.write(f"• **Total Evaluated Predictions**: `{total_samples}`")
-            st.write(f"• **Correct Direction Predictions**: `{correct_samples}`")
-            st.write(f"• **Incorrect Direction Predictions**: `{total_samples - correct_samples}`")
+            st.markdown(f"""
+            <div class="chart-container" style="padding: 20px;">
+                <p style="font-size: 1rem; color: #ffffff; margin-bottom: 8px;">• <strong>Total Evaluated Predictions:</strong> <span style="color: #2962ff;">{total_samples}</span></p>
+                <p style="font-size: 1rem; color: #ffffff; margin-bottom: 8px;">• <strong>Correct Direction Predictions:</strong> <span style="color: #22c55e;">{correct_samples}</span></p>
+                <p style="font-size: 1rem; color: #ffffff; margin-bottom: 0;">• <strong>Incorrect Direction Predictions:</strong> <span style="color: #ef4444;">{total_samples - correct_samples}</span></p>
+            </div>
+            """, unsafe_allow_html=True)
 
-        # Feature 5: Top 3 "Big Miss" Analysis for Past Week
-        st.markdown("---")
-        with st.expander("❌ Biggest Misses (Past 7 Days)", expanded=False):
-            misses_7d = df_7d[df_7d["actual_direction"] != df_7d["predicted_direction"]].copy()
-            if misses_7d.empty:
-                st.success("🎉 No prediction misses in the past week!")
-            else:
-                misses_7d["abs_return"] = misses_7d["next_day_return"].abs()
-                top3_misses_7d = misses_7d.sort_values("abs_return", ascending=False).head(3)
-                
-                miss_table_7d = fetch_headlines_for_misses(top3_misses_7d, news_df)
+        # ❌ Biggest Misses Section (Visible Table, NO expander for table!)
+        st.markdown('<div class="custom-divider"></div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-header">❌ Biggest Misses</div>', unsafe_allow_html=True)
+
+        misses_7d = df_7d[df_7d["actual_direction"] != df_7d["predicted_direction"]].copy()
+        if misses_7d.empty:
+            st.markdown('<div class="success-message">🎉 No prediction misses in this period!</div>', unsafe_allow_html=True)
+        else:
+            misses_7d["abs_return"] = misses_7d["next_day_return"].abs()
+            top3_misses_7d = misses_7d.sort_values("abs_return", ascending=False).head(5)
+
+            miss_df_7d = top3_misses_7d[["date", "stock", "actual_direction", "predicted_direction", "next_day_return"]].copy()
+            miss_df_7d["Actual"] = miss_df_7d["actual_direction"].apply(lambda x: "UP 🟢" if x == 1 else "DOWN 🔴")
+            miss_df_7d["Predicted"] = miss_df_7d["predicted_direction"].apply(lambda x: "UP 🟢" if x == 1 else "DOWN 🔴")
+            miss_df_7d["Return"] = miss_df_7d["next_day_return"].apply(lambda x: f"{x:+.2%}")
+
+            st.dataframe(
+                miss_df_7d[["date", "stock", "Actual", "Predicted", "Return"]].rename(
+                    columns={"date": "Date", "stock": "Stock"}
+                ),
+                use_container_width=True,
+                hide_index=True
+            )
+
+            miss_table_7d = fetch_headlines_for_misses(top3_misses_7d, news_df)
+            with st.expander("📰 View News Context for Misses", expanded=False):
                 for _, mrow in miss_table_7d.iterrows():
-                    st.markdown(f"""
-                    <div style='background-color:#1e222d; padding:12px; border-radius:6px; margin-bottom:8px; border-left: 4px solid #ef5350;'>
-                        <strong>Date:</strong> {mrow['Date']} | <strong>Stock:</strong> {mrow['Stock']} | 
-                        <strong>Actual:</strong> {mrow['Actual Direction']} | <strong>Predicted:</strong> {mrow['Predicted Direction']} | 
-                        <strong>Return:</strong> <span style='color:#ef5350;'>{mrow['Actual Return']}</span><br/>
-                        <div style='margin-top:6px; color:#b0bec5; font-size:0.9rem;'>
-                            <strong>Forensic News Context:</strong><br/>{mrow['Headlines']}
-                        </div>
-                    </div>
-                    """, unsafe_allow_html=True)
+                    st.markdown(f"**{mrow['Date']} - {mrow['Stock']}**")
+                    st.caption(f"📰 {mrow['Headlines']}")
 
 # ---------------------------------------------------------
 # TAB 3: Past Month (30 Days)
 # ---------------------------------------------------------
 with tab3:
-    st.subheader(f"Past Month Deep-Dive Analytics (Last 30 Days ending {max_date})")
+    st.markdown(f'<div class="section-header">📅 Past Month Deep-Dive Analytics (Last 30 Days ending {max_date})</div>', unsafe_allow_html=True)
     
     min_date_30d = max_date - pd.Timedelta(days=30)
     df_30d = df_filtered[df_filtered["date"] >= min_date_30d].copy()
-    
-    # --- FIX: Drop rows with missing actual/predicted direction ---
-    df_30d = df_30d.dropna(subset=["actual_direction", "predicted_direction"])
+    df_30d = df_30d.dropna(subset=["actual_direction", "predicted_direction", "next_day_return"])
     
     if len(df_30d) < 1:
-        st.warning("⚠️ Insufficient valid data (no rows with both actual and predicted direction) for the past month.")
+        st.warning("⚠️ Insufficient valid data for the past month.")
     else:
-        # Now safe to convert to int (no NaN values)
         y_true_30d = df_30d["actual_direction"].astype(int)
         y_pred_30d = df_30d["predicted_direction"].astype(int)
         
@@ -318,34 +527,43 @@ with tab3:
         f1_30d = f1_score(y_true_30d, y_pred_30d, zero_division=0) * 100
         
         # Monthly Accuracy & 3 Metric Cards
-        st.metric("📅 Monthly Accuracy (30 Days)", f"{acc_30d:.1f}%")
+        st.markdown(f"""
+        <div class="metric-card" style="margin-bottom: 20px;">
+            <div class="card-title">📅 Monthly Accuracy (30 Days)</div>
+            <div class="card-value card-value-gold">{acc_30d:.1f}%</div>
+            <div class="card-subtext">Overall 30-Day Predictive Precision</div>
+        </div>
+        """, unsafe_allow_html=True)
         
         m_c1, m_c2, m_c3 = st.columns(3)
         with m_c1:
             st.markdown(f"""
-            <div class='metric-card'>
-                <div class='card-title'>Precision (Up Predictions)</div>
-                <div class='card-value card-value-blue'>{prec_30d:.1f}%</div>
+            <div class="metric-card">
+                <div class="card-title">Precision (Up Predictions)</div>
+                <div class="card-value card-value-blue">{prec_30d:.1f}%</div>
+                <div class="card-subtext">Positive Predictive Value</div>
             </div>
             """, unsafe_allow_html=True)
         with m_c2:
             st.markdown(f"""
-            <div class='metric-card'>
-                <div class='card-title'>Recall (Captured Ups)</div>
-                <div class='card-value card-value-green'>{rec_30d:.1f}%</div>
+            <div class="metric-card">
+                <div class="card-title">Recall (Captured Ups)</div>
+                <div class="card-value card-value-green">{rec_30d:.1f}%</div>
+                <div class="card-subtext">True Positive Rate</div>
             </div>
             """, unsafe_allow_html=True)
         with m_c3:
             st.markdown(f"""
-            <div class='metric-card'>
-                <div class='card-title'>F1-Score</div>
-                <div class='card-value card-value-blue'>{f1_30d:.1f}%</div>
+            <div class="metric-card">
+                <div class="card-title">F1-Score</div>
+                <div class="card-value card-value-blue">{f1_30d:.1f}%</div>
+                <div class="card-subtext">Harmonic Mean</div>
             </div>
             """, unsafe_allow_html=True)
 
-        st.markdown("---")
+        st.markdown('<div class="custom-divider"></div>', unsafe_allow_html=True)
         
-        # Feature 2: P&L Simulation (Killer Extra #1)
+        # P&L Simulation
         st.markdown("### 💰 P&L Backtest Simulation (AI Strategy vs. Buy & Hold)")
         st.caption("Strategy logic: Long (+return) if AI predicts UP (1), Short (-return) if AI predicts DOWN (0).")
         
@@ -365,29 +583,33 @@ with tab3:
         fig_pnl.add_trace(go.Scatter(
             x=daily_pnl["date"], y=daily_pnl["AI Strategy P&L (%)"],
             mode="lines+markers", name="AI Strategy P&L",
-            line=dict(color="#26a69a", width=3)
+            line=dict(color="#22c55e", width=3)
         ))
         fig_pnl.add_trace(go.Scatter(
             x=daily_pnl["date"], y=daily_pnl["Buy & Hold P&L (%)"],
             mode="lines+markers", name="Buy & Hold P&L",
-            line=dict(color="#ff9800", width=2, dash="dash")
+            line=dict(color="#f9a825", width=2, dash="dash")
         ))
         fig_pnl.update_layout(
-            title="Cumulative P&L Comparison (Past 30 Days)",
-            xaxis_title="Date",
-            yaxis_title="Cumulative Return (%)",
-            template="plotly_dark",
-            height=450,
+            title=dict(text="Cumulative P&L Comparison (Past 30 Days)", font=dict(color="#ffffff", family="Inter")),
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="rgba(30, 41, 59, 0.4)",
+            xaxis=dict(title="Date", showgrid=True, gridcolor="#2a3a4a", tickfont=dict(color="#94a3b8"), titlefont=dict(color="#ffffff")),
+            yaxis=dict(title="Cumulative Return (%)", showgrid=True, gridcolor="#2a3a4a", tickfont=dict(color="#94a3b8"), titlefont=dict(color="#ffffff")),
+            height=400,
             hovermode="x unified",
-            legend=dict(orientation="h", y=1.1, x=0.3)
+            margin=dict(l=20, r=20, t=50, b=20),
+            legend=dict(orientation="h", y=1.15, x=0.01, font=dict(color="#ffffff", family="Inter"), bgcolor="rgba(30, 41, 59, 0.6)")
         )
+        st.markdown('<div class="chart-container">', unsafe_allow_html=True)
         st.plotly_chart(fig_pnl, use_container_width=True)
+        st.markdown('</div>', unsafe_allow_html=True)
 
-        st.markdown("---")
+        st.markdown('<div class="custom-divider"></div>', unsafe_allow_html=True)
         
         col_hm, col_roll = st.columns(2)
         
-        # Feature 3: Confusion Matrix Heatmap (Killer Extra #2)
+        # Confusion Matrix Heatmap
         with col_hm:
             st.markdown("### 🔥 Confusion Matrix Heatmap")
             cm_30d = confusion_matrix(y_true_30d, y_pred_30d, labels=[0, 1])
@@ -400,10 +622,18 @@ with tab3:
                 color_continuous_scale="Blues",
                 title="Confusion Matrix (30-Day Count)"
             )
-            fig_cm.update_layout(template="plotly_dark", height=380)
+            fig_cm.update_layout(
+                paper_bgcolor="rgba(0,0,0,0)",
+                plot_bgcolor="rgba(30, 41, 59, 0.4)",
+                font=dict(color="#ffffff", family="Inter"),
+                height=380,
+                margin=dict(l=20, r=20, t=50, b=20)
+            )
+            st.markdown('<div class="chart-container">', unsafe_allow_html=True)
             st.plotly_chart(fig_cm, use_container_width=True)
+            st.markdown('</div>', unsafe_allow_html=True)
 
-        # Feature 4: Rolling Accuracy Trend (Killer Extra #3)
+        # Rolling Accuracy Trend
         with col_roll:
             st.markdown("### 📈 5-Day Rolling Accuracy Trend")
             df_30d_sorted["is_correct"] = (df_30d_sorted["actual_direction"] == df_30d_sorted["predicted_direction"]).astype(float)
@@ -417,38 +647,24 @@ with tab3:
                 title="5-Day Rolling Accuracy (%)",
                 labels={"date": "Date", "5D_Rolling_Accuracy": "Accuracy (%)"}
             )
-            fig_roll.add_hline(y=50, line_dash="dash", line_color="#ef5350", annotation_text="50% Baseline (Random Guess)")
-            fig_roll.update_traces(line_color="#2962ff", line_width=2.5)
-            fig_roll.update_layout(template="plotly_dark", height=380, yaxis_range=[0, 100])
+            fig_roll.add_hline(y=50, line_dash="dash", line_color="#ef4444", annotation_text="50% Baseline (Random Guess)")
+            fig_roll.update_traces(line_color="#2962ff", line_width=3)
+            fig_roll.update_layout(
+                paper_bgcolor="rgba(0,0,0,0)",
+                plot_bgcolor="rgba(30, 41, 59, 0.4)",
+                font=dict(color="#ffffff", family="Inter"),
+                xaxis=dict(showgrid=True, gridcolor="#2a3a4a", tickfont=dict(color="#94a3b8")),
+                yaxis=dict(showgrid=True, gridcolor="#2a3a4a", tickfont=dict(color="#94a3b8"), range=[0, 100]),
+                height=380,
+                margin=dict(l=20, r=20, t=50, b=20)
+            )
+            st.markdown('<div class="chart-container">', unsafe_allow_html=True)
             st.plotly_chart(fig_roll, use_container_width=True)
+            st.markdown('</div>', unsafe_allow_html=True)
 
-        st.markdown("---")
-        
-        # Feature 5: Top 3 "Big Miss" Analysis for Past Month
-        with st.expander("❌ Biggest Misses (Past 30 Days)", expanded=False):
-            misses_30d = df_30d[df_30d["actual_direction"] != df_30d["predicted_direction"]].copy()
-            if misses_30d.empty:
-                st.success("🎉 No prediction misses in the past month!")
-            else:
-                misses_30d["abs_return"] = misses_30d["next_day_return"].abs()
-                top3_misses_30d = misses_30d.sort_values("abs_return", ascending=False).head(3)
-                
-                miss_table_30d = fetch_headlines_for_misses(top3_misses_30d, news_df)
-                for _, mrow in miss_table_30d.iterrows():
-                    st.markdown(f"""
-                    <div style='background-color:#1e222d; padding:12px; border-radius:6px; margin-bottom:8px; border-left: 4px solid #ef5350;'>
-                        <strong>Date:</strong> {mrow['Date']} | <strong>Stock:</strong> {mrow['Stock']} | 
-                        <strong>Actual:</strong> {mrow['Actual Direction']} | <strong>Predicted:</strong> {mrow['Predicted Direction']} | 
-                        <strong>Return:</strong> <span style='color:#ef5350;'>{mrow['Actual Return']}</span><br/>
-                        <div style='margin-top:6px; color:#b0bec5; font-size:0.9rem;'>
-                            <strong>Forensic News Context:</strong><br/>{mrow['Headlines']}
-                        </div>
-                    </div>
-                    """, unsafe_allow_html=True)
-
-        # Feature 6: Sector-Wise Accuracy Bar Chart (Killer Extra #5)
+        # Sector-Wise Accuracy Bar Chart
         if selected_stock == "All Stocks":
-            st.markdown("---")
+            st.markdown('<div class="custom-divider"></div>', unsafe_allow_html=True)
             st.markdown("### 🏭 Sector-Wise Accuracy Performance (30 Days)")
             st.caption("Categorized by industry sectors to highlight model domain efficacy.")
             
@@ -462,14 +678,13 @@ with tab3:
             
             sector_acc = sector_acc.sort_values("Accuracy", ascending=True)
             
-            # Color map based on accuracy thresholds: <50% red, 50-60% yellow, >60% green
             def get_color(acc):
                 if acc < 50.0:
-                    return "#ef5350"
+                    return "#ef4444"
                 elif acc <= 60.0:
-                    return "#ffca28"
+                    return "#f59e0b"
                 else:
-                    return "#26a69a"
+                    return "#22c55e"
                     
             sector_acc["Color"] = sector_acc["Accuracy"].apply(get_color)
             
@@ -482,12 +697,46 @@ with tab3:
                 title="Model Accuracy by Sector (%)"
             )
             fig_sec.update_traces(marker_color=sector_acc["Color"], textposition="outside")
-            fig_sec.add_vline(x=50, line_dash="dash", line_color="gray", annotation_text="50% Baseline")
+            fig_sec.add_vline(x=50, line_dash="dash", line_color="#94a3b8", annotation_text="50% Baseline")
             fig_sec.update_layout(
-                template="plotly_dark",
+                paper_bgcolor="rgba(0,0,0,0)",
+                plot_bgcolor="rgba(30, 41, 59, 0.4)",
+                font=dict(color="#ffffff", family="Inter"),
                 height=400,
-                xaxis_range=[0, 100],
-                xaxis_title="Accuracy (%)",
-                yaxis_title="Sector"
+                xaxis=dict(range=[0, 100], showgrid=True, gridcolor="#2a3a4a", tickfont=dict(color="#94a3b8")),
+                yaxis=dict(tickfont=dict(color="#ffffff")),
+                margin=dict(l=20, r=20, t=50, b=20)
             )
+            st.markdown('<div class="chart-container">', unsafe_allow_html=True)
             st.plotly_chart(fig_sec, use_container_width=True)
+            st.markdown('</div>', unsafe_allow_html=True)
+
+        # ❌ Biggest Misses Section (Visible Table, NO expander for table!)
+        st.markdown('<div class="custom-divider"></div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-header">❌ Biggest Misses</div>', unsafe_allow_html=True)
+
+        misses_30d = df_30d[df_30d["actual_direction"] != df_30d["predicted_direction"]].copy()
+        if misses_30d.empty:
+            st.markdown('<div class="success-message">🎉 No prediction misses in this period!</div>', unsafe_allow_html=True)
+        else:
+            misses_30d["abs_return"] = misses_30d["next_day_return"].abs()
+            top3_misses_30d = misses_30d.sort_values("abs_return", ascending=False).head(5)
+
+            miss_df_30d = top3_misses_30d[["date", "stock", "actual_direction", "predicted_direction", "next_day_return"]].copy()
+            miss_df_30d["Actual"] = miss_df_30d["actual_direction"].apply(lambda x: "UP 🟢" if x == 1 else "DOWN 🔴")
+            miss_df_30d["Predicted"] = miss_df_30d["predicted_direction"].apply(lambda x: "UP 🟢" if x == 1 else "DOWN 🔴")
+            miss_df_30d["Return"] = miss_df_30d["next_day_return"].apply(lambda x: f"{x:+.2%}")
+
+            st.dataframe(
+                miss_df_30d[["date", "stock", "Actual", "Predicted", "Return"]].rename(
+                    columns={"date": "Date", "stock": "Stock"}
+                ),
+                use_container_width=True,
+                hide_index=True
+            )
+
+            miss_table_30d = fetch_headlines_for_misses(top3_misses_30d, news_df)
+            with st.expander("📰 View News Context for Misses", expanded=False):
+                for _, mrow in miss_table_30d.iterrows():
+                    st.markdown(f"**{mrow['Date']} - {mrow['Stock']}**")
+                    st.caption(f"📰 {mrow['Headlines']}")
