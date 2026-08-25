@@ -591,15 +591,40 @@ with tab3:
             line=dict(color="#f9a825", width=2, dash="dash")
         ))
         fig_pnl.update_layout(
-            title=dict(text="Cumulative P&L Comparison (Past 30 Days)", font=dict(color="#ffffff", family="Inter")),
+            title=dict(
+                text="Cumulative P&L Comparison (Past 30 Days)",
+                font=dict(color="#ffffff", family="Inter")
+            ),
             paper_bgcolor="rgba(0,0,0,0)",
             plot_bgcolor="rgba(30, 41, 59, 0.4)",
-            xaxis=dict(title="Date", showgrid=True, gridcolor="#2a3a4a", tickfont=dict(color="#94a3b8"), titlefont=dict(color="#ffffff")),
-            yaxis=dict(title="Cumulative Return (%)", showgrid=True, gridcolor="#2a3a4a", tickfont=dict(color="#94a3b8"), titlefont=dict(color="#ffffff")),
+            xaxis=dict(
+                title=dict(  # ✅ FIXED: titlefont → nested title dict
+                    text="Date",
+                    font=dict(color="#ffffff")
+                ),
+                showgrid=True,
+                gridcolor="#2a3a4a",
+                tickfont=dict(color="#94a3b8")
+            ),
+            yaxis=dict(
+                title=dict(  # ✅ FIXED: titlefont → nested title dict
+                    text="Cumulative Return (%)",
+                    font=dict(color="#ffffff")
+                ),
+                showgrid=True,
+                gridcolor="#2a3a4a",
+                tickfont=dict(color="#94a3b8")
+            ),
             height=400,
             hovermode="x unified",
             margin=dict(l=20, r=20, t=50, b=20),
-            legend=dict(orientation="h", y=1.15, x=0.01, font=dict(color="#ffffff", family="Inter"), bgcolor="rgba(30, 41, 59, 0.6)")
+            legend=dict(
+                orientation="h",
+                y=1.15,
+                x=0.01,
+                font=dict(color="#ffffff", family="Inter"),
+                bgcolor="rgba(30, 41, 59, 0.6)"
+            )
         )
         st.markdown('<div class="chart-container">', unsafe_allow_html=True)
         st.plotly_chart(fig_pnl, use_container_width=True)

@@ -85,6 +85,30 @@ h3 { font-size: 1.25rem !important; }
     gap: 12px;
 }
 
+/* Section Description */
+.section-description {
+    background: rgba(30, 41, 59, 0.4);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    border-left: 4px solid #2962ff;
+    color: #94a3b8;
+    font-size: 0.95rem;
+    line-height: 1.7;
+}
+
+/* Chart Description */
+.chart-description {
+    background: rgba(30, 41, 59, 0.3);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 12px;
+    color: #94a3b8;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    border-left: 3px solid rgba(41, 98, 255, 0.3);
+}
+
 /* Metric Card */
 .metric-card {
     background: linear-gradient(145deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
@@ -108,13 +132,13 @@ h3 { font-size: 1.25rem !important; }
     font-weight: 500;
 }
 .metric-card .card-value {
-    font-size: 1.8rem;
+    font-size: 2rem;
     font-weight: 700;
     color: #ffffff;
     margin-top: 4px;
 }
 .metric-card .card-subtext {
-    font-size: 0.85rem;
+    font-size: 0.75rem;
     color: #94a3b8;
     margin-top: 4px;
 }
@@ -122,6 +146,46 @@ h3 { font-size: 1.25rem !important; }
 .metric-card .card-value-green { color: #22c55e; }
 .metric-card .card-value-red { color: #ef4444; }
 .metric-card .card-value-gold { color: #f9a825; }
+
+/* Direction Signal Card - Special styling */
+.metric-card-direction {
+    background: linear-gradient(145deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
+    border-radius: 12px;
+    padding: 20px 24px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    margin-bottom: 12px;
+    height: 100%;
+}
+.metric-card-direction:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+.metric-card-direction .card-title {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #94a3b8;
+    font-weight: 500;
+}
+.metric-card-direction .card-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-top: 4px;
+}
+.metric-card-direction .card-subtext {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    margin-top: 4px;
+}
+/* Border-left variants */
+.metric-card-direction.up {
+    border-left: 4px solid #22c55e;
+}
+.metric-card-direction.down {
+    border-left: 4px solid #ef4444;
+}
 
 /* Chart Container */
 .chart-container {
@@ -311,8 +375,26 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
+# Page Description (at the very top)
+st.markdown("""
+<div class="section-description">
+    <strong>📊 About This Dashboard</strong><br/>
+    This dashboard visualizes the relationship between financial news sentiment and stock price movements for NSE stocks.
+    It displays real-time sentiment analysis results, correlation metrics, and AI-powered direction predictions using XGBoost + FinBERT.
+    Use the selector below to analyze individual stocks or view the entire market universe.
+</div>
+""", unsafe_allow_html=True)
+
 # Sidebar Controls
 st.sidebar.header("⚙️ Dashboard Controls")
+st.sidebar.markdown("""
+<div class="section-description" style="padding: 12px 14px; margin-bottom: 16px; font-size: 0.85rem; line-height: 1.5;">
+    <strong>🎛️ Dashboard Controls</strong><br/>
+    Select a stock ticker to analyze, or click "Refresh Data Pipeline" to fetch the latest news and update predictions.
+    The model uses FinBERT for sentiment analysis and XGBoost for next-day price direction prediction.
+</div>
+""", unsafe_allow_html=True)
+
 selected_stock = st.sidebar.selectbox("Select NSE Stock Ticker", NSE_STOCKS, index=0)
 
 run_pipeline_btn = st.sidebar.button("🔄 Refresh Data Pipeline", use_container_width=True)
@@ -345,6 +427,18 @@ with tab1:
     stock_df = processed_df[processed_df["Symbol"] == selected_stock].sort_values("Date")
     
     if not stock_df.empty:
+        # Metric Cards Section Description
+        st.markdown("""
+        <div class="section-description">
+            <strong>📈 Key Metrics</strong><br/>
+            These cards summarize the latest available data for the selected stock:<br/>
+            • <strong>Latest Close Price:</strong> Most recent closing price from NSE<br/>
+            • <strong>Mean Sentiment:</strong> Average FinBERT sentiment score from today's news (scale: -1 to +1)<br/>
+            • <strong>News Count:</strong> Number of news articles analyzed for today<br/>
+            • <strong>Direction Signal:</strong> AI's prediction for tomorrow's price direction with confidence score
+        </div>
+        """, unsafe_allow_html=True)
+
         col1, col2, col3, col4 = st.columns(4)
         latest = stock_df.iloc[-1]
         eff_sentiment = latest.get('effective_sentiment', latest['avg_sentiment'])
@@ -367,14 +461,17 @@ with tab1:
             
             target_display = "UP 🟢" if pred_class == 1 else "DOWN 🔴"
             target_color_class = "card-value-green" if pred_class == 1 else "card-value-red"
+            dir_card_class = "up" if pred_class == 1 else "down"
             subtext = f"AI Prediction (Tomorrow) • Conf: {conf:.1%}"
         elif latest['target_up'] == 1:
             target_display = "UP 🟢"
             target_color_class = "card-value-green"
+            dir_card_class = "up"
             subtext = "Target (Next-Day Direction)"
         else:
             target_display = "DOWN 🔴"
             target_color_class = "card-value-red"
+            dir_card_class = "down"
             subtext = "Target (Next-Day Direction)"
 
         with col1:
@@ -385,6 +482,7 @@ with tab1:
                 <div class="card-subtext">NSE: {selected_stock}</div>
             </div>
             """, unsafe_allow_html=True)
+            st.caption("📊 Most recent closing price from NSE")
             
         with col2:
             st.markdown(f"""
@@ -394,6 +492,7 @@ with tab1:
                 <div class="card-subtext">FinBERT Scale (-1 to +1)</div>
             </div>
             """, unsafe_allow_html=True)
+            st.caption("💡 Sentiment Score: -1 = Very Negative, 0 = Neutral, +1 = Very Positive")
             
         with col3:
             st.markdown(f"""
@@ -403,40 +502,70 @@ with tab1:
                 <div class="card-subtext">5D Volume: {recent_news_cnt} articles</div>
             </div>
             """, unsafe_allow_html=True)
+            st.caption("📰 News Volume: Number of articles found for this stock today")
             
         with col4:
             st.markdown(f"""
-            <div class="metric-card">
+            <div class="metric-card-direction {dir_card_class}">
                 <div class="card-title">Direction Signal</div>
                 <div class="card-value {target_color_class}">{target_display}</div>
                 <div class="card-subtext">{subtext}</div>
             </div>
             """, unsafe_allow_html=True)
+            st.caption("🤖 Confidence: How certain the model is about its prediction")
 
         st.markdown('<div class="custom-divider"></div>', unsafe_allow_html=True)
+
+        # Chart Description
+        st.markdown("""
+        <div class="chart-description">
+            <strong>📈 Price vs. Sentiment Trend Analysis</strong><br/>
+            This chart shows the historical relationship between stock price (orange line) and sentiment score (blue line) over time.<br/>
+            • 📈 <strong>Orange Line:</strong> Stock's daily closing price (right axis)<br/>
+            • 📊 <strong>Blue Line:</strong> FinBERT sentiment score (left axis)<br/>
+            • 🟢 <strong>Green Background:</strong> Days with positive sentiment<br/>
+            • 🔴 <strong>Red Background:</strong> Days with negative sentiment<br/>
+            Look for patterns where sentiment changes precede price movements - this indicates potential predictive power.
+        </div>
+        """, unsafe_allow_html=True)
 
         # Interactive Plotly Dual-Axis Chart in dark theme
         fig = make_subplots(specs=[[{"secondary_y": True}]])
         
+        # Add background shading for positive / negative sentiment days
+        for _, row in stock_df.iterrows():
+            v_color = "rgba(34, 197, 94, 0.08)" if row["avg_sentiment"] >= 0 else "rgba(239, 68, 68, 0.08)"
+            fig.add_vrect(
+                x0=row["Date"], x1=row["Date"],
+                fillcolor=v_color, opacity=0.5,
+                layer="below", line_width=0
+            )
+
+        # Blue line for FinBERT Sentiment Score (left axis)
+        fig.add_trace(
+            gg.Scatter(
+                x=stock_df["Date"], 
+                y=stock_df["avg_sentiment"], 
+                name="FinBERT Sentiment Score", 
+                line=dict(color="#2962ff", width=2.5),
+                mode="lines+markers",
+                marker=dict(
+                    color=stock_df["avg_sentiment"].apply(lambda x: "#22c55e" if x >= 0 else "#ef4444"),
+                    size=8
+                ),
+                hovertemplate="Date: %{x}<br>Sentiment: %{y:+.3f}"
+            ),
+            secondary_y=False
+        )
+
+        # Orange line for Stock Close Price (right axis)
         fig.add_trace(
             gg.Scatter(
                 x=stock_df["Date"], 
                 y=stock_df["Close"], 
-                name="Close Price (INR)", 
-                line=dict(color="#2962ff", width=3),
+                name="Stock Close Price (INR)", 
+                line=dict(color="#ff9800", width=3),
                 hovertemplate="Date: %{x}<br>Close: ₹%{y:.2f}"
-            ),
-            secondary_y=False
-        )
-        
-        fig.add_trace(
-            gg.Bar(
-                x=stock_df["Date"], 
-                y=stock_df["avg_sentiment"], 
-                name="Sentiment Score", 
-                opacity=0.5,
-                marker=dict(color=stock_df["avg_sentiment"].apply(lambda x: "#22c55e" if x >= 0 else "#ef4444")),
-                hovertemplate="Date: %{x}<br>Sentiment: %{y:+.3f}"
             ),
             secondary_y=True
         )
@@ -444,12 +573,16 @@ with tab1:
         fig.update_layout(
             title=dict(
                 text=f"Daily Close Price & FinBERT Sentiment Score ({selected_stock})",
-                font=dict(color="#ffffff", size=16, family="Inter")
+                font=dict(color="#ffffff", size=16, family="Inter"),
+                y=0.96,
+                x=0.01,
+                xanchor="left",
+                yanchor="top"
             ),
             paper_bgcolor="rgba(0,0,0,0)",
             plot_bgcolor="rgba(30, 41, 59, 0.4)",
             xaxis=dict(
-                title=dict(  # ✅ FIXED: titlefont → title=dict(font=...)
+                title=dict(
                     text="Date",
                     font=dict(color="#ffffff")
                 ),
@@ -457,40 +590,33 @@ with tab1:
                 gridcolor="#2a3a4a",
                 tickfont=dict(color="#94a3b8")
             ),
-            yaxis=dict(  # ✅ Added yaxis with proper title structure
-                title=dict(
-                    text="Price / Sentiment",
-                    font=dict(color="#ffffff")
-                ),
-                showgrid=True,
-                gridcolor="#2a3a4a",
-                tickfont=dict(color="#94a3b8")
-            ),
-            height=400,
+            height=440,
             hovermode="x unified",
-            margin=dict(l=20, r=20, t=50, b=20),
+            margin=dict(l=20, r=20, t=90, b=20),
             legend=dict(
                 orientation="h", 
-                y=1.12, 
+                y=1.08, 
                 x=0.01,
+                xanchor="left",
+                yanchor="bottom",
                 font=dict(color="#ffffff", family="Inter"),
                 bgcolor="rgba(30, 41, 59, 0.6)"
             )
         )
         fig.update_yaxes(
-            title_text="Stock Close Price (₹)", 
+            title_text="Sentiment Score (-1 to +1)", 
             secondary_y=False,
             showgrid=True,
             gridcolor="#2a3a4a",
             tickfont=dict(color="#94a3b8"),
-            titlefont=dict(color="#ffffff")
+            title_font=dict(color="#ffffff")
         )
         fig.update_yaxes(
-            title_text="Sentiment Score (-1 to +1)", 
+            title_text="Stock Close Price (₹)", 
             secondary_y=True,
             showgrid=False,
             tickfont=dict(color="#94a3b8"),
-            titlefont=dict(color="#ffffff")
+            title_font=dict(color="#ffffff")
         )
 
         st.markdown('<div class="chart-container">', unsafe_allow_html=True)
@@ -504,6 +630,13 @@ with tab1:
 # ---------------------------------------------------------
 with tab2:
     st.markdown('<div class="section-header">Statistical Correlation Matrix & Per-Stock Breakdown</div>', unsafe_allow_html=True)
+    st.markdown(r"""
+    <div class="section-description">
+        <strong>🔥 Statistical Correlation Analysis</strong><br/>
+        This section evaluates the linear relationship between FinBERT news sentiment scores and next-day stock price returns across all tracked NSE equities.
+        A positive Pearson correlation coefficient (\(r\)) indicates that positive news sentiment generally precedes price appreciation.
+    </div>
+    """, unsafe_allow_html=True)
     
     ca = CorrelationAnalyzer(processed_df)
     overall_stats, stock_corrs = ca.compute_correlations()
@@ -517,6 +650,7 @@ with tab2:
             <div class="card-subtext">Linear Dependency Metric</div>
         </div>
         """, unsafe_allow_html=True)
+        st.caption("💡 Range: -1 (perfect inverse correlation) to +1 (perfect positive correlation)")
     with c2:
         st.markdown(f"""
         <div class="metric-card">
@@ -525,6 +659,7 @@ with tab2:
             <div class="card-subtext">Statistical Significance Test</div>
         </div>
         """, unsafe_allow_html=True)
+        st.caption("💡 p < 0.05 indicates statistically significant correlation")
     with c3:
         st.markdown(f"""
         <div class="metric-card">
@@ -533,12 +668,19 @@ with tab2:
             <div class="card-subtext">Aggregated Universe Records</div>
         </div>
         """, unsafe_allow_html=True)
+        st.caption("💡 Total paired trading days across all NSE tickers")
 
     st.markdown('<div class="custom-divider"></div>', unsafe_allow_html=True)
     col_left, col_right = st.columns([3, 2])
     
     with col_left:
         st.markdown("### Sentiment Score vs. Next-Day Returns Scatter Plot")
+        st.markdown("""
+        <div class="chart-description">
+            <strong>📊 Scatter Plot & OLS Trendline</strong><br/>
+            Each data point represents a trading day for a stock. The ordinary least squares (OLS) trendline illustrates the overall correlation trajectory across the NSE universe.
+        </div>
+        """, unsafe_allow_html=True)
         fig_scatter = px.scatter(
             processed_df, 
             x="avg_sentiment", 
@@ -563,6 +705,12 @@ with tab2:
         
     with col_right:
         st.markdown("### Per-Stock Correlation Table")
+        st.markdown(r"""
+        <div class="chart-description">
+            <strong>📋 Stock-Level Pearson Correlation</strong><br/>
+            Per-stock linear correlation (\(r\)) calculated across trading history. Darker blue highlights indicate stronger sentiment-to-return coupling.
+        </div>
+        """, unsafe_allow_html=True)
         st.dataframe(stock_corrs.style.background_gradient(cmap="Blues", subset=["Correlation"]), use_container_width=True, height=400)
 
 # ---------------------------------------------------------
@@ -570,6 +718,13 @@ with tab2:
 # ---------------------------------------------------------
 with tab3:
     st.markdown('<div class="section-header">XGBoost Directional Predictor vs. Baselines</div>', unsafe_allow_html=True)
+    st.markdown("""
+    <div class="section-description">
+        <strong>🤖 Predictive ML Model Overview</strong><br/>
+        This section evaluates the XGBoost classifier trained on historical FinBERT sentiment scores, price return lags, and rolling momentum features.
+        Performance is benchmarked against Random and Same-As-Yesterday baseline models using a temporal train/test split.
+    </div>
+    """, unsafe_allow_html=True)
     
     sp = SentimentPredictor(processed_df)
     results_df, _ = sp.evaluate()
@@ -578,6 +733,14 @@ with tab3:
     st.dataframe(results_df.style.highlight_max(axis=0, subset=["Accuracy", "F1 Score"], color="rgba(34, 197, 94, 0.3)"), use_container_width=True)
 
     st.markdown('<div class="custom-divider"></div>', unsafe_allow_html=True)
+
+    st.markdown("""
+    <div class="chart-description">
+        <strong>🔍 Model Diagnostic Visualizations</strong><br/>
+        • <strong>Feature Importance:</strong> Identifies which sentiment and technical factors drive the model's predictions.<br/>
+        • <strong>Confusion Matrix:</strong> Shows true vs. predicted next-day price movement directions (UP vs DOWN) on test data.
+    </div>
+    """, unsafe_allow_html=True)
 
     col_img1, col_img2 = st.columns(2)
     with col_img1:
@@ -605,6 +768,12 @@ with tab3:
 # ---------------------------------------------------------
 with tab4:
     st.markdown(f'<div class="section-header">Latest Financial News & FinBERT Inferences — {selected_stock}</div>', unsafe_allow_html=True)
+    st.markdown("""
+    <div class="section-description">
+        <strong>📰 Live Financial News & FinBERT Sentiment Signals</strong><br/>
+        Real-time financial news articles analyzed using ProsusAI FinBERT. Each news story is categorized with a sentiment label (Positive, Negative, Neutral) and an associated confidence score.
+    </div>
+    """, unsafe_allow_html=True)
     
     stock_news = news_df[news_df["Symbol"] == selected_stock].sort_values("Date", ascending=False)
     
