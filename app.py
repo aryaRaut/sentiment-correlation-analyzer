@@ -47,7 +47,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Premium Financial Dashboard Custom CSS Styling
+# Clean, Modern & Minimalist UI Styling
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
@@ -56,160 +56,71 @@ st.markdown("""
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-/* Main Background */
+/* App Background */
 .stApp {
-    background: linear-gradient(135deg, #0f1724 0%, #1a2332 100%);
+    background-color: #0f172a;
+    color: #f8fafc;
 }
 
 /* Headers */
 h1, h2, h3, h4, h5, h6 {
-    color: #ffffff !important;
+    color: #f8fafc !important;
     font-weight: 600 !important;
     letter-spacing: -0.02em !important;
 }
 
-h1 { font-size: 2rem !important; }
-h2 { font-size: 1.5rem !important; }
-h3 { font-size: 1.25rem !important; }
+h1 { font-size: 1.8rem !important; margin-bottom: 0.25rem !important; }
+h2 { font-size: 1.35rem !important; margin-top: 1rem !important; }
+h3 { font-size: 1.15rem !important; }
 
-/* Section Header */
-.section-header {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: #ffffff;
-    padding-bottom: 12px;
-    margin-bottom: 20px;
-    border-bottom: 2px solid rgba(41, 98, 255, 0.3);
-    display: flex;
-    align-items: center;
-    gap: 12px;
+/* Subtitle */
+.stCaption {
+    color: #94a3b8 !important;
 }
 
-/* Section Description */
-.section-description {
-    background: rgba(30, 41, 59, 0.4);
-    border-radius: 12px;
-    padding: 16px 20px;
-    margin-bottom: 20px;
-    border-left: 4px solid #2962ff;
-    color: #94a3b8;
-    font-size: 0.95rem;
-    line-height: 1.7;
-}
-
-/* Chart Description */
-.chart-description {
-    background: rgba(30, 41, 59, 0.3);
-    border-radius: 8px;
-    padding: 12px 16px;
-    margin-bottom: 12px;
-    color: #94a3b8;
-    font-size: 0.9rem;
-    line-height: 1.6;
-    border-left: 3px solid rgba(41, 98, 255, 0.3);
-}
-
-/* Metric Card */
+/* Metric Cards */
 .metric-card {
-    background: linear-gradient(145deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
-    border-radius: 12px;
-    padding: 20px 24px;
-    border-left: 4px solid #2962ff;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    background-color: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 16px 20px;
     margin-bottom: 12px;
     height: 100%;
 }
-.metric-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-}
 .metric-card .card-title {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     color: #94a3b8;
     font-weight: 500;
 }
 .metric-card .card-value {
-    font-size: 2rem;
+    font-size: 1.75rem;
     font-weight: 700;
-    color: #ffffff;
+    color: #f8fafc;
     margin-top: 4px;
 }
 .metric-card .card-subtext {
     font-size: 0.75rem;
-    color: #94a3b8;
+    color: #64748b;
     margin-top: 4px;
 }
-.metric-card .card-value-blue { color: #2962ff; }
-.metric-card .card-value-green { color: #22c55e; }
-.metric-card .card-value-red { color: #ef4444; }
-.metric-card .card-value-gold { color: #f9a825; }
+.card-value-blue { color: #3b82f6 !important; }
+.card-value-green { color: #22c55e !important; }
+.card-value-red { color: #ef4444 !important; }
+.card-value-gold { color: #eab308 !important; }
 
-/* Direction Signal Card - Special styling */
-.metric-card-direction {
-    background: linear-gradient(145deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
-    border-radius: 12px;
-    padding: 20px 24px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    margin-bottom: 12px;
-    height: 100%;
-}
-.metric-card-direction:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-}
-.metric-card-direction .card-title {
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: #94a3b8;
-    font-weight: 500;
-}
-.metric-card-direction .card-value {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #ffffff;
-    margin-top: 4px;
-}
-.metric-card-direction .card-subtext {
-    font-size: 0.75rem;
-    color: #94a3b8;
-    margin-top: 4px;
-}
-/* Border-left variants */
-.metric-card-direction.up {
-    border-left: 4px solid #22c55e;
-}
-.metric-card-direction.down {
-    border-left: 4px solid #ef4444;
-}
+.metric-card.border-green { border-left: 4px solid #22c55e; }
+.metric-card.border-red { border-left: 4px solid #ef4444; }
+.metric-card.border-blue { border-left: 4px solid #3b82f6; }
 
-/* Chart Container */
-.chart-container {
-    background: rgba(30, 41, 59, 0.5);
-    border-radius: 12px;
-    padding: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    margin-bottom: 16px;
-}
-
-/* Divider */
-.custom-divider {
-    margin: 28px 0;
-    border: 0;
-    height: 1px;
-    background: linear-gradient(to right, transparent, rgba(41, 98, 255, 0.3), transparent);
-}
-
-/* Tabs Customization */
+/* Custom Tabs */
 .stTabs [data-baseweb="tab-list"] {
-    gap: 8px;
-    background-color: rgba(30, 41, 59, 0.5);
+    gap: 6px;
+    background-color: #1e293b;
     border-radius: 8px;
     padding: 4px;
+    border: 1px solid #334155;
 }
 .stTabs [data-baseweb="tab"] {
     border-radius: 6px;
@@ -218,114 +129,36 @@ h3 { font-size: 1.25rem !important; }
     font-weight: 500;
 }
 .stTabs [data-baseweb="tab"][aria-selected="true"] {
-    background-color: #2962ff;
+    background-color: #3b82f6;
     color: #ffffff;
 }
 
-/* Dataframe Styling */
+/* Dataframe & Table */
 .stDataFrame {
-    background: rgba(30, 41, 59, 0.5) !important;
-    border-radius: 12px !important;
-    border: 1px solid rgba(255, 255, 255, 0.05) !important;
-}
-.stDataFrame thead {
-    background: rgba(41, 98, 255, 0.2) !important;
-}
-.stDataFrame tbody tr:hover {
-    background: rgba(41, 98, 255, 0.1) !important;
-}
-
-/* Selectbox Styling */
-.stSelectbox > div > div {
-    background-color: rgba(30, 41, 59, 0.8) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid #334155 !important;
     border-radius: 8px !important;
-    color: #ffffff !important;
-}
-.stSelectbox > div > div:hover {
-    border-color: #2962ff !important;
 }
 
-/* Metric Boxes */
-[data-testid="stMetricValue"] {
-    font-size: 2rem !important;
-    font-weight: 700 !important;
-}
-[data-testid="stMetricLabel"] {
-    color: #94a3b8 !important;
-    font-weight: 500 !important;
-}
-
-/* Success/Warning/Info Boxes */
-.stAlert {
-    border-radius: 12px !important;
-    background-color: rgba(30, 41, 59, 0.8) !important;
-    border-left: 4px solid #2962ff !important;
-}
-
-/* Expander Styling (keep but minimal) */
-.streamlit-expanderHeader {
-    background-color: rgba(30, 41, 59, 0.5) !important;
-    border-radius: 8px !important;
-    color: #ffffff !important;
-}
-.streamlit-expanderContent {
-    background-color: rgba(30, 41, 59, 0.3) !important;
-    border-radius: 0 0 8px 8px !important;
-}
-
-/* Scrollbar */
-::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-::-webkit-scrollbar-track {
-    background: rgba(30, 41, 59, 0.5);
-    border-radius: 4px;
-}
-::-webkit-scrollbar-thumb {
-    background: #2962ff;
-    border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-    background: #1a73e8;
-}
-
-/* Success Message */
-.success-message {
-    background: rgba(34, 197, 94, 0.1);
-    border-left: 4px solid #22c55e;
-    padding: 12px 16px;
-    border-radius: 8px;
-    color: #22c55e;
-    font-weight: 500;
-}
-
-/* Table Container */
-.table-container {
-    background: rgba(30, 41, 59, 0.5);
-    border-radius: 12px;
-    padding: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    margin-top: 12px;
-}
-
-/* FinBERT News Badges */
-.badge-pos { background-color: rgba(34, 197, 94, 0.2); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.4); padding: 4px 10px; border-radius: 6px; font-weight: 600; font-size: 0.75rem; }
-.badge-neg { background-color: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4); padding: 4px 10px; border-radius: 6px; font-weight: 600; font-size: 0.75rem; }
-.badge-neu { background-color: rgba(148, 163, 184, 0.2); color: #94a3b8; border: 1px solid rgba(148, 163, 184, 0.4); padding: 4px 10px; border-radius: 6px; font-weight: 600; font-size: 0.75rem; }
-
+/* News Cards */
 .news-card {
-    background: rgba(30, 41, 59, 0.6);
-    border-radius: 12px;
-    padding: 16px 20px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    margin-bottom: 12px;
-    transition: transform 0.2s ease, border-color 0.2s ease;
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 10px;
+    transition: border-color 0.15s ease;
 }
 .news-card:hover {
-    border-color: rgba(41, 98, 255, 0.4);
-    transform: translateY(-1px);
+    border-color: #475569;
+}
+.badge-pos { background: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); padding: 2px 8px; border-radius: 4px; font-weight: 600; font-size: 0.75rem; }
+.badge-neg { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); padding: 2px 8px; border-radius: 4px; font-weight: 600; font-size: 0.75rem; }
+.badge-neu { background: rgba(148, 163, 184, 0.15); color: #cbd5e1; border: 1px solid rgba(148, 163, 184, 0.3); padding: 2px 8px; border-radius: 4px; font-weight: 600; font-size: 0.75rem; }
+
+/* Hide Streamlit Header Padding */
+.block-container {
+    padding-top: 2rem !important;
+    padding-bottom: 2rem !important;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -353,58 +186,27 @@ def load_or_generate_pipeline_data():
     return processed_df, news_df
 
 # Load Data
-with st.spinner("Loading market data & sentiment inference matrix..."):
+with st.spinner("Loading market data & sentiment matrix..."):
     processed_df, news_df = load_or_generate_pipeline_data()
 
 processed_df["Date"] = pd.to_datetime(processed_df["Date"]).dt.date
 news_df["Date"] = pd.to_datetime(news_df["Date"]).dt.date
 
-last_updated_str = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
-
 # Header Section
-st.markdown(f"""
-<div style="display: flex; justify-content: space-between; align-items: flex-end; padding-bottom: 16px; border-bottom: 2px solid rgba(41, 98, 255, 0.3); margin-bottom: 24px;">
-    <div>
-        <h1 style="margin: 0; padding: 0;">📈 NSE Stock Sentiment & Price Movement Analyzer</h1>
-        <p style="color: #94a3b8; margin: 6px 0 0 0; font-size: 0.95rem;">AI-Powered Financial News Sentiment Analysis (FinBERT) vs. Next-Day Return Predictability</p>
-    </div>
-    <div style="text-align: right; color: #94a3b8; font-size: 0.85rem; background: rgba(30, 41, 59, 0.5); padding: 8px 14px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.05);">
-        <span>Pipeline: <strong style="color: #22c55e;">● Active & Ready</strong></span><br/>
-        <span>Last Updated: <strong style="color: #ffffff;">{last_updated_str}</strong></span>
-    </div>
-</div>
-""", unsafe_allow_html=True)
-
-# Page Description (at the very top)
-st.markdown("""
-<div class="section-description">
-    <strong>📊 About This Dashboard</strong><br/>
-    This dashboard visualizes the relationship between financial news sentiment and stock price movements for NSE stocks.
-    It displays real-time sentiment analysis results, correlation metrics, and AI-powered direction predictions using XGBoost + FinBERT.
-    Use the selector below to analyze individual stocks or view the entire market universe.
-</div>
-""", unsafe_allow_html=True)
+st.title("📈 NSE Stock Sentiment & Return Predictor")
+st.caption("AI-Powered Financial News Sentiment Analysis (FinBERT) vs. Next-Day Return Predictability")
 
 # Sidebar Controls
-st.sidebar.header("⚙️ Dashboard Controls")
-st.sidebar.markdown("""
-<div class="section-description" style="padding: 12px 14px; margin-bottom: 16px; font-size: 0.85rem; line-height: 1.5;">
-    <strong>🎛️ Dashboard Controls</strong><br/>
-    Select a stock ticker to analyze, or click "Refresh Data Pipeline" to fetch the latest news and update predictions.
-    The model uses FinBERT for sentiment analysis and XGBoost for next-day price direction prediction.
-</div>
-""", unsafe_allow_html=True)
-
+st.sidebar.header("Dashboard Controls")
 selected_stock = st.sidebar.selectbox("Select NSE Stock Ticker", NSE_STOCKS, index=0)
 
-run_pipeline_btn = st.sidebar.button("🔄 Refresh Data Pipeline", use_container_width=True)
-if run_pipeline_btn:
+if st.sidebar.button("🔄 Refresh Data Pipeline", use_container_width=True):
     st.cache_data.clear()
     st.sidebar.success("Cache cleared! Re-running pipeline...")
 
-st.sidebar.markdown("---")
+st.sidebar.divider()
 st.sidebar.markdown("""
-<div style="color: #94a3b8; font-size: 0.8rem;">
+<div style="color: #94a3b8; font-size: 0.8rem; line-height: 1.5;">
     <strong>Model Engine:</strong> XGBoost + FinBERT<br/>
     <strong>Target Horizon:</strong> T+1 Next-Day Direction<br/>
     <strong>Universe:</strong> NSE Nifty Top Stocks
@@ -413,32 +215,20 @@ st.sidebar.markdown("""
 
 # Navigation Tabs
 tab1, tab2, tab3, tab4 = st.tabs([
-    "📊 Price & Sentiment Trend", 
+    "📈 Price & Sentiment Trend", 
     "🔥 Correlation Analysis", 
-    "🤖 Predictive ML Model", 
-    "📰 Live News & FinBERT Signals"
+    "🤖 Predictive Model", 
+    "📰 Live News & Signals"
 ])
 
 # ---------------------------------------------------------
 # TAB 1: Price & Sentiment Trend Overlay
 # ---------------------------------------------------------
 with tab1:
-    st.markdown(f'<div class="section-header">Price vs. Sentiment Trend Analysis — {selected_stock}</div>', unsafe_allow_html=True)
+    st.subheader(f"Price vs. Sentiment Trend — {selected_stock}")
     stock_df = processed_df[processed_df["Symbol"] == selected_stock].sort_values("Date")
     
     if not stock_df.empty:
-        # Metric Cards Section Description
-        st.markdown("""
-        <div class="section-description">
-            <strong>📈 Key Metrics</strong><br/>
-            These cards summarize the latest available data for the selected stock:<br/>
-            • <strong>Latest Close Price:</strong> Most recent closing price from NSE<br/>
-            • <strong>Mean Sentiment:</strong> Average FinBERT sentiment score from today's news (scale: -1 to +1)<br/>
-            • <strong>News Count:</strong> Number of news articles analyzed for today<br/>
-            • <strong>Direction Signal:</strong> AI's prediction for tomorrow's price direction with confidence score
-        </div>
-        """, unsafe_allow_html=True)
-
         col1, col2, col3, col4 = st.columns(4)
         latest = stock_df.iloc[-1]
         eff_sentiment = latest.get('effective_sentiment', latest['avg_sentiment'])
@@ -447,9 +237,8 @@ with tab1:
         
         sent_color_class = "card-value-green" if eff_sentiment >= 0 else "card-value-red"
         
-        # Check if actual target_up is known or pending
+        # Check target_up prediction
         if pd.isna(latest.get('target_up')) or np.isnan(latest.get('target_up', np.nan)):
-            # Predict direction for tomorrow using trained XGBoost model
             sp = SentimentPredictor(processed_df)
             X_train, X_test, y_train, y_test, _ = sp.time_based_split()
             sp.train_xgboost(X_train, y_train)
@@ -461,28 +250,27 @@ with tab1:
             
             target_display = "UP 🟢" if pred_class == 1 else "DOWN 🔴"
             target_color_class = "card-value-green" if pred_class == 1 else "card-value-red"
-            dir_card_class = "up" if pred_class == 1 else "down"
-            subtext = f"AI Prediction (Tomorrow) • Conf: {conf:.1%}"
+            dir_border_class = "border-green" if pred_class == 1 else "border-red"
+            subtext = f"AI Tomorrow • Conf: {conf:.1%}"
         elif latest['target_up'] == 1:
             target_display = "UP 🟢"
             target_color_class = "card-value-green"
-            dir_card_class = "up"
+            dir_border_class = "border-green"
             subtext = "Target (Next-Day Direction)"
         else:
             target_display = "DOWN 🔴"
             target_color_class = "card-value-red"
-            dir_card_class = "down"
+            dir_border_class = "border-red"
             subtext = "Target (Next-Day Direction)"
 
         with col1:
             st.markdown(f"""
-            <div class="metric-card">
+            <div class="metric-card border-blue">
                 <div class="card-title">Latest Close Price</div>
                 <div class="card-value card-value-blue">₹{latest['Close']:.2f}</div>
                 <div class="card-subtext">NSE: {selected_stock}</div>
             </div>
             """, unsafe_allow_html=True)
-            st.caption("📊 Most recent closing price from NSE")
             
         with col2:
             st.markdown(f"""
@@ -492,7 +280,6 @@ with tab1:
                 <div class="card-subtext">FinBERT Scale (-1 to +1)</div>
             </div>
             """, unsafe_allow_html=True)
-            st.caption("💡 Sentiment Score: -1 = Very Negative, 0 = Neutral, +1 = Very Positive")
             
         with col3:
             st.markdown(f"""
@@ -502,39 +289,24 @@ with tab1:
                 <div class="card-subtext">5D Volume: {recent_news_cnt} articles</div>
             </div>
             """, unsafe_allow_html=True)
-            st.caption("📰 News Volume: Number of articles found for this stock today")
             
         with col4:
             st.markdown(f"""
-            <div class="metric-card-direction {dir_card_class}">
+            <div class="metric-card {dir_border_class}">
                 <div class="card-title">Direction Signal</div>
                 <div class="card-value {target_color_class}">{target_display}</div>
                 <div class="card-subtext">{subtext}</div>
             </div>
             """, unsafe_allow_html=True)
-            st.caption("🤖 Confidence: How certain the model is about its prediction")
 
-        st.markdown('<div class="custom-divider"></div>', unsafe_allow_html=True)
-
-        # Chart Description
-        st.markdown("""
-        <div class="chart-description">
-            <strong>📈 Price vs. Sentiment Trend Analysis</strong><br/>
-            This chart shows the historical relationship between stock price (orange line) and sentiment score (blue line) over time.<br/>
-            • 📈 <strong>Orange Line:</strong> Stock's daily closing price (right axis)<br/>
-            • 📊 <strong>Blue Line:</strong> FinBERT sentiment score (left axis)<br/>
-            • 🟢 <strong>Green Background:</strong> Days with positive sentiment<br/>
-            • 🔴 <strong>Red Background:</strong> Days with negative sentiment<br/>
-            Look for patterns where sentiment changes precede price movements - this indicates potential predictive power.
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown("<br/>", unsafe_allow_html=True)
 
         # Interactive Plotly Dual-Axis Chart in dark theme
         fig = make_subplots(specs=[[{"secondary_y": True}]])
         
         # Add background shading for positive / negative sentiment days
         for _, row in stock_df.iterrows():
-            v_color = "rgba(34, 197, 94, 0.08)" if row["avg_sentiment"] >= 0 else "rgba(239, 68, 68, 0.08)"
+            v_color = "rgba(34, 197, 94, 0.06)" if row["avg_sentiment"] >= 0 else "rgba(239, 68, 68, 0.06)"
             fig.add_vrect(
                 x0=row["Date"], x1=row["Date"],
                 fillcolor=v_color, opacity=0.5,
@@ -546,12 +318,12 @@ with tab1:
             gg.Scatter(
                 x=stock_df["Date"], 
                 y=stock_df["avg_sentiment"], 
-                name="FinBERT Sentiment Score", 
-                line=dict(color="#2962ff", width=2.5),
+                name="FinBERT Sentiment", 
+                line=dict(color="#3b82f6", width=2),
                 mode="lines+markers",
                 marker=dict(
                     color=stock_df["avg_sentiment"].apply(lambda x: "#22c55e" if x >= 0 else "#ef4444"),
-                    size=8
+                    size=7
                 ),
                 hovertemplate="Date: %{x}<br>Sentiment: %{y:+.3f}"
             ),
@@ -563,8 +335,8 @@ with tab1:
             gg.Scatter(
                 x=stock_df["Date"], 
                 y=stock_df["Close"], 
-                name="Stock Close Price (INR)", 
-                line=dict(color="#ff9800", width=3),
+                name="Close Price (₹)", 
+                line=dict(color="#f97316", width=2.5),
                 hovertemplate="Date: %{x}<br>Close: ₹%{y:.2f}"
             ),
             secondary_y=True
@@ -572,34 +344,25 @@ with tab1:
 
         fig.update_layout(
             title=dict(
-                text=f"Daily Close Price & FinBERT Sentiment Score ({selected_stock})",
-                font=dict(color="#ffffff", size=16, family="Inter"),
-                y=0.96,
-                x=0.01,
-                xanchor="left",
-                yanchor="top"
+                text=f"Daily Close Price & FinBERT Sentiment ({selected_stock})",
+                font=dict(color="#f8fafc", size=15, family="Inter")
             ),
             paper_bgcolor="rgba(0,0,0,0)",
-            plot_bgcolor="rgba(30, 41, 59, 0.4)",
+            plot_bgcolor="#1e293b",
             xaxis=dict(
-                title=dict(
-                    text="Date",
-                    font=dict(color="#ffffff")
-                ),
+                title=dict(text="Date", font=dict(color="#94a3b8")),
                 showgrid=True,
-                gridcolor="#2a3a4a",
+                gridcolor="#334155",
                 tickfont=dict(color="#94a3b8")
             ),
-            height=440,
+            height=420,
             hovermode="x unified",
-            margin=dict(l=20, r=20, t=90, b=20),
+            margin=dict(l=15, r=15, t=50, b=15),
             legend=dict(
                 orientation="h", 
                 y=1.08, 
                 x=0.01,
-                xanchor="left",
-                yanchor="bottom",
-                font=dict(color="#ffffff", family="Inter"),
+                font=dict(color="#f8fafc", family="Inter"),
                 bgcolor="rgba(30, 41, 59, 0.6)"
             )
         )
@@ -607,21 +370,19 @@ with tab1:
             title_text="Sentiment Score (-1 to +1)", 
             secondary_y=False,
             showgrid=True,
-            gridcolor="#2a3a4a",
+            gridcolor="#334155",
             tickfont=dict(color="#94a3b8"),
-            title_font=dict(color="#ffffff")
+            title_font=dict(color="#94a3b8")
         )
         fig.update_yaxes(
             title_text="Stock Close Price (₹)", 
             secondary_y=True,
             showgrid=False,
             tickfont=dict(color="#94a3b8"),
-            title_font=dict(color="#ffffff")
+            title_font=dict(color="#94a3b8")
         )
 
-        st.markdown('<div class="chart-container">', unsafe_allow_html=True)
         st.plotly_chart(fig, use_container_width=True)
-        st.markdown('</div>', unsafe_allow_html=True)
     else:
         st.warning(f"No processed data available for {selected_stock}")
 
@@ -629,14 +390,7 @@ with tab1:
 # TAB 2: Correlation Analysis
 # ---------------------------------------------------------
 with tab2:
-    st.markdown('<div class="section-header">Statistical Correlation Matrix & Per-Stock Breakdown</div>', unsafe_allow_html=True)
-    st.markdown(r"""
-    <div class="section-description">
-        <strong>🔥 Statistical Correlation Analysis</strong><br/>
-        This section evaluates the linear relationship between FinBERT news sentiment scores and next-day stock price returns across all tracked NSE equities.
-        A positive Pearson correlation coefficient (\(r\)) indicates that positive news sentiment generally precedes price appreciation.
-    </div>
-    """, unsafe_allow_html=True)
+    st.subheader("Statistical Correlation Matrix & Universe Breakdown")
     
     ca = CorrelationAnalyzer(processed_df)
     overall_stats, stock_corrs = ca.compute_correlations()
@@ -644,13 +398,12 @@ with tab2:
     c1, c2, c3 = st.columns(3)
     with c1:
         st.markdown(f"""
-        <div class="metric-card">
-            <div class="card-title">Overall Pearson Correlation (r)</div>
+        <div class="metric-card border-blue">
+            <div class="card-title">Pearson Correlation (r)</div>
             <div class="card-value card-value-blue">{overall_stats['r']:.4f}</div>
             <div class="card-subtext">Linear Dependency Metric</div>
         </div>
         """, unsafe_allow_html=True)
-        st.caption("💡 Range: -1 (perfect inverse correlation) to +1 (perfect positive correlation)")
     with c2:
         st.markdown(f"""
         <div class="metric-card">
@@ -659,7 +412,6 @@ with tab2:
             <div class="card-subtext">Statistical Significance Test</div>
         </div>
         """, unsafe_allow_html=True)
-        st.caption("💡 p < 0.05 indicates statistically significant correlation")
     with c3:
         st.markdown(f"""
         <div class="metric-card">
@@ -668,19 +420,12 @@ with tab2:
             <div class="card-subtext">Aggregated Universe Records</div>
         </div>
         """, unsafe_allow_html=True)
-        st.caption("💡 Total paired trading days across all NSE tickers")
 
-    st.markdown('<div class="custom-divider"></div>', unsafe_allow_html=True)
+    st.markdown("<br/>", unsafe_allow_html=True)
     col_left, col_right = st.columns([3, 2])
     
     with col_left:
-        st.markdown("### Sentiment Score vs. Next-Day Returns Scatter Plot")
-        st.markdown("""
-        <div class="chart-description">
-            <strong>📊 Scatter Plot & OLS Trendline</strong><br/>
-            Each data point represents a trading day for a stock. The ordinary least squares (OLS) trendline illustrates the overall correlation trajectory across the NSE universe.
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown("### Sentiment vs. Next-Day Returns")
         fig_scatter = px.scatter(
             processed_df, 
             x="avg_sentiment", 
@@ -692,64 +437,38 @@ with tab2:
         )
         fig_scatter.update_layout(
             paper_bgcolor="rgba(0,0,0,0)",
-            plot_bgcolor="rgba(30, 41, 59, 0.4)",
-            font=dict(color="#ffffff", family="Inter"),
-            xaxis=dict(showgrid=True, gridcolor="#2a3a4a", tickfont=dict(color="#94a3b8")),
-            yaxis=dict(showgrid=True, gridcolor="#2a3a4a", tickfont=dict(color="#94a3b8")),
+            plot_bgcolor="#1e293b",
+            font=dict(color="#f8fafc", family="Inter"),
+            xaxis=dict(showgrid=True, gridcolor="#334155", tickfont=dict(color="#94a3b8")),
+            yaxis=dict(showgrid=True, gridcolor="#334155", tickfont=dict(color="#94a3b8")),
             height=400,
-            margin=dict(l=20, r=20, t=50, b=20)
+            margin=dict(l=15, r=15, t=40, b=15)
         )
-        st.markdown('<div class="chart-container">', unsafe_allow_html=True)
         st.plotly_chart(fig_scatter, use_container_width=True)
-        st.markdown('</div>', unsafe_allow_html=True)
         
     with col_right:
         st.markdown("### Per-Stock Correlation Table")
-        st.markdown(r"""
-        <div class="chart-description">
-            <strong>📋 Stock-Level Pearson Correlation</strong><br/>
-            Per-stock linear correlation (\(r\)) calculated across trading history. Darker blue highlights indicate stronger sentiment-to-return coupling.
-        </div>
-        """, unsafe_allow_html=True)
         st.dataframe(stock_corrs.style.background_gradient(cmap="Blues", subset=["Correlation"]), use_container_width=True, height=400)
 
 # ---------------------------------------------------------
 # TAB 3: Predictive Machine Learning Model
 # ---------------------------------------------------------
 with tab3:
-    st.markdown('<div class="section-header">XGBoost Directional Predictor vs. Baselines</div>', unsafe_allow_html=True)
-    st.markdown("""
-    <div class="section-description">
-        <strong>🤖 Predictive ML Model Overview</strong><br/>
-        This section evaluates the XGBoost classifier trained on historical FinBERT sentiment scores, price return lags, and rolling momentum features.
-        Performance is benchmarked against Random and Same-As-Yesterday baseline models using a temporal train/test split.
-    </div>
-    """, unsafe_allow_html=True)
+    st.subheader("XGBoost Directional Predictor vs. Baselines")
     
     sp = SentimentPredictor(processed_df)
     results_df, _ = sp.evaluate()
     
     st.markdown("### Model Evaluation Summary (Time-Based Train/Test Split)")
-    st.dataframe(results_df.style.highlight_max(axis=0, subset=["Accuracy", "F1 Score"], color="rgba(34, 197, 94, 0.3)"), use_container_width=True)
+    st.dataframe(results_df.style.highlight_max(axis=0, subset=["Accuracy", "F1 Score"], color="rgba(34, 197, 94, 0.25)"), use_container_width=True)
 
-    st.markdown('<div class="custom-divider"></div>', unsafe_allow_html=True)
-
-    st.markdown("""
-    <div class="chart-description">
-        <strong>🔍 Model Diagnostic Visualizations</strong><br/>
-        • <strong>Feature Importance:</strong> Identifies which sentiment and technical factors drive the model's predictions.<br/>
-        • <strong>Confusion Matrix:</strong> Shows true vs. predicted next-day price movement directions (UP vs DOWN) on test data.
-    </div>
-    """, unsafe_allow_html=True)
-
+    st.markdown("<br/>", unsafe_allow_html=True)
     col_img1, col_img2 = st.columns(2)
     with col_img1:
         st.markdown("### Feature Importance Plot")
         feat_img = OUTPUT_FIGURES_DIR / "feature_importance.png"
         if os.path.exists(feat_img):
-            st.markdown('<div class="chart-container">', unsafe_allow_html=True)
             st.image(str(feat_img), use_container_width=True)
-            st.markdown('</div>', unsafe_allow_html=True)
         else:
             st.info("Feature importance plot loading...")
             
@@ -757,9 +476,7 @@ with tab3:
         st.markdown("### Confusion Matrix")
         cm_img = OUTPUT_FIGURES_DIR / "confusion_matrix.png"
         if os.path.exists(cm_img):
-            st.markdown('<div class="chart-container">', unsafe_allow_html=True)
             st.image(str(cm_img), use_container_width=True)
-            st.markdown('</div>', unsafe_allow_html=True)
         else:
             st.info("Confusion matrix loading...")
 
@@ -767,13 +484,7 @@ with tab3:
 # TAB 4: Live News & Sentiment Feed
 # ---------------------------------------------------------
 with tab4:
-    st.markdown(f'<div class="section-header">Latest Financial News & FinBERT Inferences — {selected_stock}</div>', unsafe_allow_html=True)
-    st.markdown("""
-    <div class="section-description">
-        <strong>📰 Live Financial News & FinBERT Sentiment Signals</strong><br/>
-        Real-time financial news articles analyzed using ProsusAI FinBERT. Each news story is categorized with a sentiment label (Positive, Negative, Neutral) and an associated confidence score.
-    </div>
-    """, unsafe_allow_html=True)
+    st.subheader(f"Latest Financial News & FinBERT Signals — {selected_stock}")
     
     stock_news = news_df[news_df["Symbol"] == selected_stock].sort_values("Date", ascending=False)
     
@@ -796,20 +507,15 @@ with tab4:
             st.markdown(f"""
             <div class="news-card">
                 <div style='display:flex; justify-content:space-between; align-items:center;'>
-                    <span style='color:#2962ff; font-weight:600; font-size:0.85rem;'>📅 {date_str} | {src}</span>
-                    <span>{badge} <span style='color:#94a3b8; font-size:0.8rem; margin-left:6px;'>(Conf: {conf:.1%})</span></span>
+                    <span style='color:#3b82f6; font-weight:600; font-size:0.85rem;'>📅 {date_str} | {src}</span>
+                    <span>{badge} <span style='color:#64748b; font-size:0.8rem; margin-left:6px;'>(Conf: {conf:.1%})</span></span>
                 </div>
-                <h4 style='margin:10px 0 0 0; font-size:1.05rem;'><a href='{url}' target='_blank' style='color:#ffffff; text-decoration:none;'>{headline}</a></h4>
+                <h4 style='margin:8px 0 0 0; font-size:1.05rem;'><a href='{url}' target='_blank' style='color:#f8fafc; text-decoration:none;'>{headline}</a></h4>
             </div>
             """, unsafe_allow_html=True)
     else:
         st.info(f"No recent news articles recorded for {selected_stock}.")
 
-# Clean Dashboard Footer
-st.markdown('<div class="custom-divider"></div>', unsafe_allow_html=True)
-st.markdown("""
-<div style="text-align: center; color: #94a3b8; font-size: 0.85rem; padding: 12px 0;">
-    NSE Sentiment-Correlation Analyzer • Engineered with Streamlit, Plotly, FinBERT & XGBoost
-</div>
-""", unsafe_allow_html=True)
+st.divider()
+st.caption("NSE Sentiment-Correlation Analyzer • Built with Streamlit, Plotly, FinBERT & XGBoost")
 

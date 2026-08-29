@@ -35,7 +35,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom Styling (Premium Dark Theme Financial Dashboard)
+# Clean, Modern & Minimalist Styling
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
@@ -46,89 +46,69 @@ st.markdown("""
 
 /* Main Background */
 .stApp {
-    background: linear-gradient(135deg, #0f1724 0%, #1a2332 100%);
+    background-color: #0f172a;
+    color: #f8fafc;
 }
 
 /* Headers */
 h1, h2, h3, h4, h5, h6 {
-    color: #ffffff !important;
+    color: #f8fafc !important;
     font-weight: 600 !important;
     letter-spacing: -0.02em !important;
 }
 
-h1 { font-size: 2rem !important; }
-h2 { font-size: 1.5rem !important; }
-h3 { font-size: 1.25rem !important; }
+h1 { font-size: 1.8rem !important; margin-bottom: 0.25rem !important; }
+h2 { font-size: 1.35rem !important; margin-top: 1rem !important; }
+h3 { font-size: 1.15rem !important; }
 
-/* Section Header */
-.section-header {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: #ffffff;
-    padding-bottom: 12px;
-    margin-bottom: 20px;
-    border-bottom: 2px solid rgba(41, 98, 255, 0.3);
-    display: flex;
-    align-items: center;
-    gap: 12px;
+/* Subtitle */
+.stCaption {
+    color: #94a3b8 !important;
 }
 
-/* Metric Card */
+/* Metric Cards */
 .metric-card {
-    background: linear-gradient(145deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
-    border-radius: 12px;
-    padding: 20px 24px;
-    border-left: 4px solid #2962ff;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    background-color: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 16px 20px;
     margin-bottom: 12px;
     height: 100%;
 }
-.metric-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-}
 .metric-card .card-title {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     color: #94a3b8;
     font-weight: 500;
 }
 .metric-card .card-value {
-    font-size: 2rem;
+    font-size: 1.75rem;
     font-weight: 700;
-    color: #ffffff;
+    color: #f8fafc;
     margin-top: 4px;
 }
-.metric-card .card-value-blue { color: #2962ff; }
-.metric-card .card-value-green { color: #22c55e; }
-.metric-card .card-value-red { color: #ef4444; }
-.metric-card .card-value-gold { color: #f9a825; }
-
-/* Chart Container */
-.chart-container {
-    background: rgba(30, 41, 59, 0.5);
-    border-radius: 12px;
-    padding: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    margin-bottom: 16px;
+.metric-card .card-subtext {
+    font-size: 0.75rem;
+    color: #64748b;
+    margin-top: 4px;
 }
+.card-value-blue { color: #3b82f6 !important; }
+.card-value-green { color: #22c55e !important; }
+.card-value-red { color: #ef4444 !important; }
+.card-value-gold { color: #eab308 !important; }
 
-/* Divider */
-.custom-divider {
-    margin: 28px 0;
-    border: 0;
-    height: 1px;
-    background: linear-gradient(to right, transparent, rgba(41, 98, 255, 0.3), transparent);
-}
+.metric-card.border-green { border-left: 4px solid #22c55e; }
+.metric-card.border-red { border-left: 4px solid #ef4444; }
+.metric-card.border-blue { border-left: 4px solid #3b82f6; }
 
-/* Tabs Customization */
+/* Tabs */
 .stTabs [data-baseweb="tab-list"] {
-    gap: 8px;
-    background-color: rgba(30, 41, 59, 0.5);
+    gap: 6px;
+    background-color: #1e293b;
     border-radius: 8px;
     padding: 4px;
+    border: 1px solid #334155;
 }
 .stTabs [data-baseweb="tab"] {
     border-radius: 6px;
@@ -137,107 +117,35 @@ h3 { font-size: 1.25rem !important; }
     font-weight: 500;
 }
 .stTabs [data-baseweb="tab"][aria-selected="true"] {
-    background-color: #2962ff;
+    background-color: #3b82f6;
     color: #ffffff;
 }
 
 /* Dataframe Styling */
 .stDataFrame {
-    background: rgba(30, 41, 59, 0.5) !important;
-    border-radius: 12px !important;
-    border: 1px solid rgba(255, 255, 255, 0.05) !important;
-}
-.stDataFrame thead {
-    background: rgba(41, 98, 255, 0.2) !important;
-}
-.stDataFrame tbody tr:hover {
-    background: rgba(41, 98, 255, 0.1) !important;
-}
-
-/* Selectbox Styling */
-.stSelectbox > div > div {
-    background-color: rgba(30, 41, 59, 0.8) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid #334155 !important;
     border-radius: 8px !important;
-    color: #ffffff !important;
-}
-.stSelectbox > div > div:hover {
-    border-color: #2962ff !important;
 }
 
-/* Metric Boxes */
-[data-testid="stMetricValue"] {
-    font-size: 2rem !important;
-    font-weight: 700 !important;
-}
-[data-testid="stMetricLabel"] {
-    color: #94a3b8 !important;
-    font-weight: 500 !important;
-}
-
-/* Success/Warning/Info Boxes */
-.stAlert {
-    border-radius: 12px !important;
-    background-color: rgba(30, 41, 59, 0.8) !important;
-    border-left: 4px solid #2962ff !important;
-}
-
-/* Expander Styling (keep but minimal) */
-.streamlit-expanderHeader {
-    background-color: rgba(30, 41, 59, 0.5) !important;
-    border-radius: 8px !important;
-    color: #ffffff !important;
-}
-.streamlit-expanderContent {
-    background-color: rgba(30, 41, 59, 0.3) !important;
-    border-radius: 0 0 8px 8px !important;
-}
-
-/* Scrollbar */
-::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-::-webkit-scrollbar-track {
-    background: rgba(30, 41, 59, 0.5);
-    border-radius: 4px;
-}
-::-webkit-scrollbar-thumb {
-    background: #2962ff;
-    border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-    background: #1a73e8;
-}
-
-/* Success Message */
-.success-message {
+.success-box {
     background: rgba(34, 197, 94, 0.1);
-    border-left: 4px solid #22c55e;
+    border: 1px solid rgba(34, 197, 94, 0.3);
     padding: 12px 16px;
-    border-radius: 8px;
-    color: #22c55e;
+    border-radius: 6px;
+    color: #4ade80;
     font-weight: 500;
 }
 
-/* Table Container */
-.table-container {
-    background: rgba(30, 41, 59, 0.5);
-    border-radius: 12px;
-    padding: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    margin-top: 12px;
+.block-container {
+    padding-top: 2rem !important;
+    padding-bottom: 2rem !important;
 }
 </style>
 """, unsafe_allow_html=True)
 
 # Main Title & Subheader
-st.markdown("""
-<div style="padding-bottom: 16px; border-bottom: 2px solid rgba(41, 98, 255, 0.3); margin-bottom: 24px;">
-    <h1 style="margin: 0; padding: 0;">🎯 Model Performance Monitoring & Analytics</h1>
-    <p style="color: #94a3b8; margin: 6px 0 0 0; font-size: 0.95rem;">Empirical Validation of XGBoost Sentiment Model: Real-Time Accuracy, P&L Backtest, Confusion Matrix & Sector Drift</p>
-</div>
-""", unsafe_allow_html=True)
+st.title("🎯 Model Performance & Analytics")
+st.caption("Empirical Validation of XGBoost Sentiment Model: Real-Time Accuracy, P&L Backtest, Confusion Matrix & Sector Drift")
 
 # Load Data via Cached Loader
 with st.spinner("Loading performance analytics & model inferences..."):
@@ -302,7 +210,7 @@ tab1, tab2, tab3 = st.tabs(["📅 Yesterday", "📆 Past Week (7 Days)", "📅 P
 # TAB 1: Yesterday Performance
 # ---------------------------------------------------------
 with tab1:
-    st.markdown(f'<div class="section-header">📅 Yesterday\'s Performance Overview ({max_date})</div>', unsafe_allow_html=True)
+    st.subheader(f"Yesterday's Performance Overview ({max_date})")
     
     # Filter for yesterday's data
     yesterday_df = df_filtered[df_filtered["date"] == max_date]
@@ -360,8 +268,8 @@ with tab1:
         c1, c2, c3 = st.columns(3)
         with c1:
             st.markdown(f"""
-            <div class="metric-card">
-                <div class="card-title">Universe Yesterday Accuracy</div>
+            <div class="metric-card border-blue">
+                <div class="card-title">Yesterday Accuracy</div>
                 <div class="card-value card-value-blue">{acc_pct:.1f}%</div>
                 <div class="card-subtext">Across {total_stocks} Stocks</div>
             </div>
@@ -396,13 +304,13 @@ with tab1:
             hide_index=True
         )
 
-    # ❌ Biggest Misses Section (Visible Table, NO expander for table!)
-    st.markdown('<div class="custom-divider"></div>', unsafe_allow_html=True)
-    st.markdown('<div class="section-header">❌ Biggest Misses</div>', unsafe_allow_html=True)
+    # ❌ Biggest Misses Section
+    st.markdown("<br/>", unsafe_allow_html=True)
+    st.subheader("❌ Biggest Misses")
 
     misses_yest = yesterday_df[yesterday_df["actual_direction"] != yesterday_df["predicted_direction"]].copy()
     if misses_yest.empty:
-        st.markdown('<div class="success-message">🎉 No prediction misses in this period!</div>', unsafe_allow_html=True)
+        st.markdown('<div class="success-box">🎉 No prediction misses in this period!</div>', unsafe_allow_html=True)
     else:
         misses_yest["abs_return"] = misses_yest["next_day_return"].abs()
         top_misses_yest = misses_yest.sort_values("abs_return", ascending=False).head(5)
@@ -430,7 +338,7 @@ with tab1:
 # TAB 2: Past Week (7 Days)
 # ---------------------------------------------------------
 with tab2:
-    st.markdown(f'<div class="section-header">📆 Past Week Performance (Last 7 Days ending {max_date})</div>', unsafe_allow_html=True)
+    st.subheader(f"Past Week Performance (7 Days ending {max_date})")
     
     min_date_7d = max_date - pd.Timedelta(days=7)
     df_7d = df_filtered[df_filtered["date"] >= min_date_7d].copy()
@@ -443,10 +351,9 @@ with tab2:
         y_pred_7d = df_7d["predicted_direction"].astype(int)
         acc_7d = accuracy_score(y_true_7d, y_pred_7d) * 100
         
-        # Weekly Accuracy Metric Card
         st.markdown(f"""
-        <div class="metric-card" style="margin-bottom: 20px;">
-            <div class="card-title">📆 Weekly Accuracy (7 Days)</div>
+        <div class="metric-card border-blue" style="margin-bottom: 20px;">
+            <div class="card-title">Weekly Accuracy (7 Days)</div>
             <div class="card-value card-value-gold">{acc_7d:.1f}%</div>
             <div class="card-subtext">Evaluated across past 7 trading days</div>
         </div>
@@ -461,27 +368,27 @@ with tab2:
                 index=["Actual Down (0)", "Actual Up (1)"],
                 columns=["Predicted Down (0)", "Predicted Up (1)"]
             )
-            st.dataframe(cm_df_7d.style.highlight_max(axis=None, color="rgba(34, 197, 94, 0.3)"), use_container_width=True)
+            st.dataframe(cm_df_7d.style.highlight_max(axis=None, color="rgba(34, 197, 94, 0.25)"), use_container_width=True)
             
         with col_info:
             st.markdown("### 7-Day Sample Summary")
             total_samples = len(df_7d)
             correct_samples = int((y_true_7d == y_pred_7d).sum())
             st.markdown(f"""
-            <div class="chart-container" style="padding: 20px;">
-                <p style="font-size: 1rem; color: #ffffff; margin-bottom: 8px;">• <strong>Total Evaluated Predictions:</strong> <span style="color: #2962ff;">{total_samples}</span></p>
-                <p style="font-size: 1rem; color: #ffffff; margin-bottom: 8px;">• <strong>Correct Direction Predictions:</strong> <span style="color: #22c55e;">{correct_samples}</span></p>
-                <p style="font-size: 1rem; color: #ffffff; margin-bottom: 0;">• <strong>Incorrect Direction Predictions:</strong> <span style="color: #ef4444;">{total_samples - correct_samples}</span></p>
+            <div class="metric-card" style="padding: 20px;">
+                <p style="font-size: 0.95rem; color: #f8fafc; margin-bottom: 8px;">• <strong>Total Evaluated Predictions:</strong> <span style="color: #3b82f6;">{total_samples}</span></p>
+                <p style="font-size: 0.95rem; color: #f8fafc; margin-bottom: 8px;">• <strong>Correct Direction Predictions:</strong> <span style="color: #22c55e;">{correct_samples}</span></p>
+                <p style="font-size: 0.95rem; color: #f8fafc; margin-bottom: 0;">• <strong>Incorrect Direction Predictions:</strong> <span style="color: #ef4444;">{total_samples - correct_samples}</span></p>
             </div>
             """, unsafe_allow_html=True)
 
-        # ❌ Biggest Misses Section (Visible Table, NO expander for table!)
-        st.markdown('<div class="custom-divider"></div>', unsafe_allow_html=True)
-        st.markdown('<div class="section-header">❌ Biggest Misses</div>', unsafe_allow_html=True)
+        # ❌ Biggest Misses Section
+        st.markdown("<br/>", unsafe_allow_html=True)
+        st.subheader("❌ Biggest Misses")
 
         misses_7d = df_7d[df_7d["actual_direction"] != df_7d["predicted_direction"]].copy()
         if misses_7d.empty:
-            st.markdown('<div class="success-message">🎉 No prediction misses in this period!</div>', unsafe_allow_html=True)
+            st.markdown('<div class="success-box">🎉 No prediction misses in this period!</div>', unsafe_allow_html=True)
         else:
             misses_7d["abs_return"] = misses_7d["next_day_return"].abs()
             top3_misses_7d = misses_7d.sort_values("abs_return", ascending=False).head(5)
@@ -509,7 +416,7 @@ with tab2:
 # TAB 3: Past Month (30 Days)
 # ---------------------------------------------------------
 with tab3:
-    st.markdown(f'<div class="section-header">📅 Past Month Deep-Dive Analytics (Last 30 Days ending {max_date})</div>', unsafe_allow_html=True)
+    st.subheader(f"Past Month Deep-Dive Analytics (30 Days ending {max_date})")
     
     min_date_30d = max_date - pd.Timedelta(days=30)
     df_30d = df_filtered[df_filtered["date"] >= min_date_30d].copy()
@@ -526,10 +433,9 @@ with tab3:
         rec_30d = recall_score(y_true_30d, y_pred_30d, zero_division=0) * 100
         f1_30d = f1_score(y_true_30d, y_pred_30d, zero_division=0) * 100
         
-        # Monthly Accuracy & 3 Metric Cards
         st.markdown(f"""
-        <div class="metric-card" style="margin-bottom: 20px;">
-            <div class="card-title">📅 Monthly Accuracy (30 Days)</div>
+        <div class="metric-card border-blue" style="margin-bottom: 20px;">
+            <div class="card-title">Monthly Accuracy (30 Days)</div>
             <div class="card-value card-value-gold">{acc_30d:.1f}%</div>
             <div class="card-subtext">Overall 30-Day Predictive Precision</div>
         </div>
@@ -561,7 +467,7 @@ with tab3:
             </div>
             """, unsafe_allow_html=True)
 
-        st.markdown('<div class="custom-divider"></div>', unsafe_allow_html=True)
+        st.markdown("<br/>", unsafe_allow_html=True)
         
         # P&L Simulation
         st.markdown("### 💰 P&L Backtest Simulation (AI Strategy vs. Buy & Hold)")
@@ -583,60 +489,52 @@ with tab3:
         fig_pnl.add_trace(go.Scatter(
             x=daily_pnl["date"], y=daily_pnl["AI Strategy P&L (%)"],
             mode="lines+markers", name="AI Strategy P&L",
-            line=dict(color="#22c55e", width=3)
+            line=dict(color="#22c55e", width=2.5)
         ))
         fig_pnl.add_trace(go.Scatter(
             x=daily_pnl["date"], y=daily_pnl["Buy & Hold P&L (%)"],
             mode="lines+markers", name="Buy & Hold P&L",
-            line=dict(color="#f9a825", width=2, dash="dash")
+            line=dict(color="#eab308", width=2, dash="dash")
         ))
         fig_pnl.update_layout(
             title=dict(
                 text="Cumulative P&L Comparison (Past 30 Days)",
-                font=dict(color="#ffffff", family="Inter")
+                font=dict(color="#f8fafc", family="Inter")
             ),
             paper_bgcolor="rgba(0,0,0,0)",
-            plot_bgcolor="rgba(30, 41, 59, 0.4)",
+            plot_bgcolor="#1e293b",
             xaxis=dict(
-                title=dict(  # ✅ FIXED: titlefont → nested title dict
-                    text="Date",
-                    font=dict(color="#ffffff")
-                ),
+                title=dict(text="Date", font=dict(color="#94a3b8")),
                 showgrid=True,
-                gridcolor="#2a3a4a",
+                gridcolor="#334155",
                 tickfont=dict(color="#94a3b8")
             ),
             yaxis=dict(
-                title=dict(  # ✅ FIXED: titlefont → nested title dict
-                    text="Cumulative Return (%)",
-                    font=dict(color="#ffffff")
-                ),
+                title=dict(text="Cumulative Return (%)", font=dict(color="#94a3b8")),
                 showgrid=True,
-                gridcolor="#2a3a4a",
+                gridcolor="#334155",
                 tickfont=dict(color="#94a3b8")
             ),
             height=400,
             hovermode="x unified",
-            margin=dict(l=20, r=20, t=50, b=20),
+            margin=dict(l=15, r=15, t=40, b=15),
             legend=dict(
                 orientation="h",
-                y=1.15,
+                y=1.12,
                 x=0.01,
-                font=dict(color="#ffffff", family="Inter"),
+                font=dict(color="#f8fafc", family="Inter"),
                 bgcolor="rgba(30, 41, 59, 0.6)"
             )
         )
-        st.markdown('<div class="chart-container">', unsafe_allow_html=True)
         st.plotly_chart(fig_pnl, use_container_width=True)
-        st.markdown('</div>', unsafe_allow_html=True)
 
-        st.markdown('<div class="custom-divider"></div>', unsafe_allow_html=True)
+        st.markdown("<br/>", unsafe_allow_html=True)
         
         col_hm, col_roll = st.columns(2)
         
         # Confusion Matrix Heatmap
         with col_hm:
-            st.markdown("### 🔥 Confusion Matrix Heatmap")
+            st.markdown("### Confusion Matrix Heatmap")
             cm_30d = confusion_matrix(y_true_30d, y_pred_30d, labels=[0, 1])
             fig_cm = px.imshow(
                 cm_30d,
@@ -649,18 +547,16 @@ with tab3:
             )
             fig_cm.update_layout(
                 paper_bgcolor="rgba(0,0,0,0)",
-                plot_bgcolor="rgba(30, 41, 59, 0.4)",
-                font=dict(color="#ffffff", family="Inter"),
+                plot_bgcolor="#1e293b",
+                font=dict(color="#f8fafc", family="Inter"),
                 height=380,
-                margin=dict(l=20, r=20, t=50, b=20)
+                margin=dict(l=15, r=15, t=40, b=15)
             )
-            st.markdown('<div class="chart-container">', unsafe_allow_html=True)
             st.plotly_chart(fig_cm, use_container_width=True)
-            st.markdown('</div>', unsafe_allow_html=True)
 
         # Rolling Accuracy Trend
         with col_roll:
-            st.markdown("### 📈 5-Day Rolling Accuracy Trend")
+            st.markdown("### 5-Day Rolling Accuracy Trend")
             df_30d_sorted["is_correct"] = (df_30d_sorted["actual_direction"] == df_30d_sorted["predicted_direction"]).astype(float)
             daily_acc = df_30d_sorted.groupby("date")["is_correct"].mean().reset_index()
             daily_acc["5D_Rolling_Accuracy"] = daily_acc["is_correct"].rolling(window=5, min_periods=1).mean() * 100
@@ -673,25 +569,22 @@ with tab3:
                 labels={"date": "Date", "5D_Rolling_Accuracy": "Accuracy (%)"}
             )
             fig_roll.add_hline(y=50, line_dash="dash", line_color="#ef4444", annotation_text="50% Baseline (Random Guess)")
-            fig_roll.update_traces(line_color="#2962ff", line_width=3)
+            fig_roll.update_traces(line_color="#3b82f6", line_width=2.5)
             fig_roll.update_layout(
                 paper_bgcolor="rgba(0,0,0,0)",
-                plot_bgcolor="rgba(30, 41, 59, 0.4)",
-                font=dict(color="#ffffff", family="Inter"),
-                xaxis=dict(showgrid=True, gridcolor="#2a3a4a", tickfont=dict(color="#94a3b8")),
-                yaxis=dict(showgrid=True, gridcolor="#2a3a4a", tickfont=dict(color="#94a3b8"), range=[0, 100]),
+                plot_bgcolor="#1e293b",
+                font=dict(color="#f8fafc", family="Inter"),
+                xaxis=dict(showgrid=True, gridcolor="#334155", tickfont=dict(color="#94a3b8")),
+                yaxis=dict(showgrid=True, gridcolor="#334155", tickfont=dict(color="#94a3b8"), range=[0, 100]),
                 height=380,
-                margin=dict(l=20, r=20, t=50, b=20)
+                margin=dict(l=15, r=15, t=40, b=15)
             )
-            st.markdown('<div class="chart-container">', unsafe_allow_html=True)
             st.plotly_chart(fig_roll, use_container_width=True)
-            st.markdown('</div>', unsafe_allow_html=True)
 
         # Sector-Wise Accuracy Bar Chart
         if selected_stock == "All Stocks":
-            st.markdown('<div class="custom-divider"></div>', unsafe_allow_html=True)
-            st.markdown("### 🏭 Sector-Wise Accuracy Performance (30 Days)")
-            st.caption("Categorized by industry sectors to highlight model domain efficacy.")
+            st.markdown("<br/>", unsafe_allow_html=True)
+            st.markdown("### Sector-Wise Accuracy Performance (30 Days)")
             
             df_30d_sector = df_30d.copy()
             if "Sector" not in df_30d_sector.columns:
@@ -725,24 +618,22 @@ with tab3:
             fig_sec.add_vline(x=50, line_dash="dash", line_color="#94a3b8", annotation_text="50% Baseline")
             fig_sec.update_layout(
                 paper_bgcolor="rgba(0,0,0,0)",
-                plot_bgcolor="rgba(30, 41, 59, 0.4)",
-                font=dict(color="#ffffff", family="Inter"),
-                height=400,
-                xaxis=dict(range=[0, 100], showgrid=True, gridcolor="#2a3a4a", tickfont=dict(color="#94a3b8")),
-                yaxis=dict(tickfont=dict(color="#ffffff")),
-                margin=dict(l=20, r=20, t=50, b=20)
+                plot_bgcolor="#1e293b",
+                font=dict(color="#f8fafc", family="Inter"),
+                height=380,
+                xaxis=dict(range=[0, 100], showgrid=True, gridcolor="#334155", tickfont=dict(color="#94a3b8")),
+                yaxis=dict(tickfont=dict(color="#f8fafc")),
+                margin=dict(l=15, r=15, t=40, b=15)
             )
-            st.markdown('<div class="chart-container">', unsafe_allow_html=True)
             st.plotly_chart(fig_sec, use_container_width=True)
-            st.markdown('</div>', unsafe_allow_html=True)
 
-        # ❌ Biggest Misses Section (Visible Table, NO expander for table!)
-        st.markdown('<div class="custom-divider"></div>', unsafe_allow_html=True)
-        st.markdown('<div class="section-header">❌ Biggest Misses</div>', unsafe_allow_html=True)
+        # ❌ Biggest Misses Section
+        st.markdown("<br/>", unsafe_allow_html=True)
+        st.subheader("❌ Biggest Misses")
 
         misses_30d = df_30d[df_30d["actual_direction"] != df_30d["predicted_direction"]].copy()
         if misses_30d.empty:
-            st.markdown('<div class="success-message">🎉 No prediction misses in this period!</div>', unsafe_allow_html=True)
+            st.markdown('<div class="success-box">🎉 No prediction misses in this period!</div>', unsafe_allow_html=True)
         else:
             misses_30d["abs_return"] = misses_30d["next_day_return"].abs()
             top3_misses_30d = misses_30d.sort_values("abs_return", ascending=False).head(5)
