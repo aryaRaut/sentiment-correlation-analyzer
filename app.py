@@ -209,7 +209,8 @@ st.sidebar.markdown("""
 <div style="color: #94a3b8; font-size: 0.8rem; line-height: 1.5;">
     <strong>Model Engine:</strong> XGBoost + FinBERT<br/>
     <strong>Target Horizon:</strong> T+1 Next-Day Direction<br/>
-    <strong>Universe:</strong> NSE Nifty Top Stocks
+    <strong>Universe:</strong> NSE Nifty Top Stocks<br/>
+    <strong>Research Features:</strong> <a href="/Advanced_Analytics" target="_self" style="color:#3b82f6; font-weight:600;">🔬 5_Advanced_Analytics</a>
 </div>
 """, unsafe_allow_html=True)
 
@@ -432,7 +433,6 @@ with tab2:
             y="next_day_return", 
             color="Symbol",
             hover_data=["Date", "Symbol", "news_count"],
-            trendline="ols",
             title="Sentiment Score vs Next-Day Return Across Universe"
         )
         fig_scatter.update_layout(
