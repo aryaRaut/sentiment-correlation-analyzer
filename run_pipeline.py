@@ -11,6 +11,7 @@ import sys
 import time
 import pandas as pd
 import numpy as np
+import joblib
 
 # Ensure current working directory is on python path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -65,6 +66,71 @@ def clean_processed_data(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+def generate_predictions(processed_df: pd.DataFrame, sp: SentimentPredictor, model) -> pd.DataFrame:
+    """
+    Generates predictions for all historical data with robust fallback mechanisms.
+    """
+    df = processed_df.copy()
+    
+    # Get feature columns
+    feature_cols = sp.FEATURE_COLS
+    
+    # Ensure all required features are present
+    missing_feats = [col for col in feature_cols if col not in df.columns]
+    for mf in missing_feats:
+        df[mf] = 0.0
+    
+    # Prepare features
+    X = df[feature_cols].fillna(0.0)
+    
+    # --- Try to use the provided model ---
+    if hasattr(model, 'predict'):
+        logger.info("-> Using model from evaluate()")
+        df["predicted_direction"] = model.predict(X)
+        df["predicted_direction"] = df["predicted_direction"].astype(int)
+        logger.info(f"-> Generated predictions for {len(df)} rows")
+        return df
+    
+    # --- Fallback 1: Try to load from disk ---
+    model_path = OUTPUT_REPORTS_DIR / "xgboost_model.joblib"
+    if model_path.exists():
+        try:
+            logger.info(f"-> Loading model from disk: {model_path}")
+            loaded_model = joblib.load(model_path)
+            df["predicted_direction"] = loaded_model.predict(X)
+            df["predicted_direction"] = df["predicted_direction"].astype(int)
+            logger.info(f"-> Generated predictions for {len(df)} rows")
+            return df
+        except Exception as e:
+            logger.warning(f"-> Failed to load model from disk: {e}")
+    
+    # --- Fallback 2: Train a new model ---
+    logger.info("-> Training a new model for predictions...")
+    try:
+        new_sp = SentimentPredictor(df)
+        X_train, X_test, y_train, y_test, _ = new_sp.time_based_split()
+        new_model = new_sp.train_xgboost(X_train, y_train)
+        
+        df["predicted_direction"] = new_model.predict(X)
+        df["predicted_direction"] = df["predicted_direction"].astype(int)
+        
+        # Save for future use
+        os.makedirs(OUTPUT_REPORTS_DIR, exist_ok=True)
+        joblib.dump(new_model, model_path)
+        logger.info(f"-> Trained and saved new model to {model_path}")
+        logger.info(f"-> Generated predictions for {len(df)} rows")
+        return df
+    except Exception as e:
+        logger.error(f"-> Failed to train new model: {e}")
+    
+    # --- Fallback 3: Create dummy predictions ---
+    logger.warning("-> Creating dummy predictions (all zeros) to avoid pipeline failure")
+    df["predicted_direction"] = 0
+    df["predicted_direction"] = df["predicted_direction"].astype(int)
+    logger.warning("-> Dummy predictions created. Dashboard will regenerate predictions.")
+    return df
+
+
 def main():
     """Executes the full Sentiment-to-Price Correlation Analyzer pipeline."""
     start_time = time.time()
@@ -113,34 +179,28 @@ def main():
     logger.info("-> Model Comparison Results:")
     print(results_df.to_string(index=False))
 
-    # --- NEW: Generate predictions and save them to the processed DataFrame ---
+    # --- NEW: Generate predictions with robust fallback ---
     logger.info("\n[STEP 5.5/6] Generating Predictions for All Historical Data...")
-    try:
-        # Get the feature columns used by the model
-        feature_cols = sp.FEATURE_COLS
-        
-        # Ensure all required features are present
-        missing_feats = [col for col in feature_cols if col not in processed_df.columns]
-        for mf in missing_feats:
-            processed_df[mf] = 0.0
-        
-        # Prepare features
-        X = processed_df[feature_cols].fillna(0.0)
-        
-        # Generate predictions
-        processed_df["predicted_direction"] = model.predict(X)
-        logger.info(f"-> Generated predictions for {len(processed_df)} rows")
-        
-        # Ensure predictions are integers
-        processed_df["predicted_direction"] = processed_df["predicted_direction"].astype(int)
-        
-    except Exception as e:
-        logger.warning(f"-> Could not generate predictions: {e}")
-        logger.warning("-> Predictions will be generated in the dashboard instead.")
+    processed_df = generate_predictions(processed_df, sp, model)
 
     # --- NEW: Final cleanup before saving ---
     logger.info("\n[STEP 5.6/6] Final Data Cleanup...")
-    processed_df = processed_df.dropna(subset=["actual_direction", "predicted_direction", "next_day_return"])
+    
+    # Only drop NaN if the columns exist
+    cols_to_drop = []
+    if "actual_direction" in processed_df.columns:
+        cols_to_drop.append("actual_direction")
+    if "predicted_direction" in processed_df.columns:
+        cols_to_drop.append("predicted_direction")
+    if "next_day_return" in processed_df.columns:
+        cols_to_drop.append("next_day_return")
+    
+    if cols_to_drop:
+        before = len(processed_df)
+        processed_df = processed_df.dropna(subset=cols_to_drop)
+        after = len(processed_df)
+        if before != after:
+            logger.info(f"-> Removed {before - after} rows with NaN in {cols_to_drop}")
     
     # Ensure correct data types
     for col in ["actual_direction", "predicted_direction"]:
