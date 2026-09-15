@@ -9,6 +9,7 @@ and report exporting.
 import os
 import sys
 import time
+import datetime
 import pandas as pd
 import numpy as np
 import joblib
@@ -145,6 +146,23 @@ def main():
     news_df = collector.fetch_stock_news()
     logger.info(f"-> Fetched {len(price_df)} daily price records across {price_df['Symbol'].nunique()} stocks.")
     logger.info(f"-> Fetched {len(news_df)} headline articles.")
+
+    # Step 1.5: Verify Data Freshness
+    logger.info("\n[STEP 1.5] Verifying Data Freshness...")
+    latest_date = pd.to_datetime(price_df['Date']).max().date()
+    today = datetime.date.today()
+    days_stale = (today - latest_date).days
+
+    if days_stale == 0:
+        logger.info(f"✅ Data is fresh (latest: {latest_date})")
+    elif days_stale == 1:
+        logger.info(f"✅ Data is from yesterday (latest: {latest_date})")
+    elif days_stale <= 3:
+        logger.warning(f"⚠️ Data is {days_stale} days old (latest: {latest_date})")
+        logger.warning("   This may be due to a weekend, market holiday, or yfinance delay.")
+    else:
+        logger.error(f"🔴 Data is {days_stale} days old (latest: {latest_date})")
+        logger.error("   This is unusual. Check if yfinance is working correctly.")
 
     # Step 3: FinBERT Sentiment Inference
     logger.info("\n[STEP 2/6] Running FinBERT Sentiment Inference...")

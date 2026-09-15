@@ -25,7 +25,9 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.append(str(PROJECT_ROOT))
 
+import datetime
 from src.data_loader import load_processed_data, load_news_data, SECTOR_MAP
+from src.data_freshness import display_freshness_banner
 
 # Page Configuration
 st.set_page_config(
@@ -156,6 +158,9 @@ if df.empty:
     st.error("Unable to load processed dataset. Please check data/processed/processed_dataset.csv.")
     st.stop()
 
+# Data Freshness Banner
+display_freshness_banner(df)
+
 # Available Stocks Dropdown (Top Control)
 stocks_list = sorted(list(df["stock"].unique()))
 selected_stock = st.selectbox("📌 Select Stock Ticker", options=["All Stocks"] + stocks_list, index=0)
@@ -210,7 +215,18 @@ tab1, tab2, tab3 = st.tabs(["📅 Yesterday", "📆 Past Week (7 Days)", "📅 P
 # TAB 1: Yesterday Performance
 # ---------------------------------------------------------
 with tab1:
-    st.subheader(f"Yesterday's Performance Overview ({max_date})")
+    # Get the latest available date in the data
+    latest_available_date = df_filtered['date'].max()
+    
+    st.subheader(f"📅 Latest Performance Overview (Data from {latest_available_date})")
+    
+    # Add a caption explaining if it's not today's date
+    today = datetime.date.today()
+    if pd.to_datetime(latest_available_date).date() != today:
+        st.caption(
+            f"⚠️ Note: The most recent data available is from **{latest_available_date}**. "
+            f"Today is {today}. This may be due to market closure or data delay."
+        )
     
     # Filter for yesterday's data
     yesterday_df = df_filtered[df_filtered["date"] == max_date]

@@ -38,6 +38,7 @@ from src.sentiment_analyzer import SentimentAnalyzer
 from src.feature_engineering import FeatureEngineer
 from src.correlation_analyzer import CorrelationAnalyzer
 from src.prediction_model import SentimentPredictor
+from src.data_freshness import display_freshness_banner, get_data_freshness
 
 # Page Configuration
 st.set_page_config(
@@ -192,8 +193,20 @@ with st.spinner("Loading market data & sentiment matrix..."):
 processed_df["Date"] = pd.to_datetime(processed_df["Date"]).dt.date
 news_df["Date"] = pd.to_datetime(news_df["Date"]).dt.date
 
-# Header Section
-st.title("📈 NSE Stock Sentiment & Return Predictor")
+# Header Section with Data Freshness Indicator
+freshness = get_data_freshness(processed_df, date_col='Date')
+
+col1, col2, col3 = st.columns([2, 1, 1])
+with col1:
+    st.markdown(f"### 📈 NSE Stock Sentiment & Price Movement Analyzer")
+with col2:
+    if freshness['is_fresh']:
+        st.markdown(f"<div style='color:#22c55e; font-size:0.9rem;'>🟢 {freshness['freshness_label']}</div>", unsafe_allow_html=True)
+    else:
+        st.markdown(f"<div style='color:#f59e0b; font-size:0.9rem;'>🟡 {freshness['freshness_label']}</div>", unsafe_allow_html=True)
+with col3:
+    st.caption(f"Latest: {freshness['latest_date']}")
+
 st.caption("AI-Powered Financial News Sentiment Analysis (FinBERT) vs. Next-Day Return Predictability")
 
 # Sidebar Controls
@@ -203,6 +216,20 @@ selected_stock = st.sidebar.selectbox("Select NSE Stock Ticker", NSE_STOCKS, ind
 if st.sidebar.button("🔄 Refresh Data Pipeline", use_container_width=True):
     st.cache_data.clear()
     st.sidebar.success("Cache cleared! Re-running pipeline...")
+
+st.sidebar.divider()
+
+st.sidebar.markdown("### 🔧 Data Controls")
+
+if st.sidebar.button("🔄 Force Refresh Data", use_container_width=True, key="force_refresh"):
+    st.cache_data.clear()
+    st.sidebar.success("Cache cleared! Reloading data...")
+    st.rerun()
+
+st.sidebar.caption(
+    "Click this button if you believe the data is stale and want to force a re-fetch. "
+    "This will clear the Streamlit cache and reload all data."
+)
 
 st.sidebar.divider()
 st.sidebar.markdown("""
@@ -228,6 +255,9 @@ tab1, tab2, tab3, tab4 = st.tabs([
 with tab1:
     st.subheader(f"Price vs. Sentiment Trend — {selected_stock}")
     stock_df = processed_df[processed_df["Symbol"] == selected_stock].sort_values("Date")
+    
+    # Data Freshness Banner
+    display_freshness_banner(stock_df, date_col='Date')
     
     if not stock_df.empty:
         col1, col2, col3, col4 = st.columns(4)
@@ -265,11 +295,30 @@ with tab1:
             subtext = "Target (Next-Day Direction)"
 
         with col1:
+            # FIXED: Show the actual date of the data, not just stock name
+            latest_date = latest['Date']
+            today = datetime.date.today()
+            if isinstance(latest_date, str):
+                latest_date_obj = pd.to_datetime(latest_date).date()
+            else:
+                latest_date_obj = latest_date
+            
+            if latest_date_obj == today:
+                date_label = f"NSE: {selected_stock}"
+            else:
+                date_label = f"NSE: {selected_stock} (as of {latest_date_obj})"
+            
+            latest_price = latest.get('Close', None)
+            if latest_price is not None and not pd.isna(latest_price):
+                price_display = f"₹{latest_price:,.2f}"
+            else:
+                price_display = "N/A"
+            
             st.markdown(f"""
             <div class="metric-card border-blue">
                 <div class="card-title">Latest Close Price</div>
-                <div class="card-value card-value-blue">₹{latest['Close']:.2f}</div>
-                <div class="card-subtext">NSE: {selected_stock}</div>
+                <div class="card-value card-value-blue">{price_display}</div>
+                <div class="card-subtext">{date_label}</div>
             </div>
             """, unsafe_allow_html=True)
             
